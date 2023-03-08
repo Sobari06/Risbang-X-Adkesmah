@@ -3,4 +3,5 @@ pandas
 datetime
 requests
 gspread
-
+ServiceAccountCredentials
+streamlit-lottie
