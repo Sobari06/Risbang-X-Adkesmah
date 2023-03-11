@@ -5,4 +5,4 @@ requests
 gspread
 oauth2client
 streamlit-lottie
-sessionstate
+session-state
