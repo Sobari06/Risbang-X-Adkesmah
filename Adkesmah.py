@@ -5,7 +5,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 from streamlit_lottie import st_lottie
 import requests 
-from streamlit.hashing import _CodeHasher
+from streamlit.legacy_caching.hashing import _CodeHasher
+
 # Google Sheets authentication
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
