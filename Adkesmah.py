@@ -5,7 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 from streamlit_lottie import st_lottie
 import requests 
-from session_state import SessionState # Install terlebih dahulu paket session_state dengan perintah "pip install session-state"
+from streamlit.hashing import _CodeHasher
 # Google Sheets authentication
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
@@ -15,7 +15,7 @@ client = gspread.authorize(creds)
 sheet = client.open('Keluhan Mahasiswa').sheet1
 sheet1 = client.open('KepuasanUser').sheet1
 #data = sheet.get_all_records()
-# Define the sidebar menu options
+# Define the sidebar menu optionsst
 menu = ['Halaman Utama', 'Identitas Penerima Keluhan', 'Survei Kepuasan', 'Frequently Asked Questions', 'Akses Keluhan', 'Complaint Analytics']
 choice = st.sidebar.selectbox('Menu', menu)
 
@@ -221,7 +221,18 @@ if choice == 'Akses Keluhan':
         sheet.update_cell(row, 4, status)
         sheet.update_cell(row, 5, now)
 
-    # Daftar email dan password penerima keluhan
+    # Inisialisasi session state
+    class _SessionState:
+        def __init__(self):
+            self.logged_in = False
+            self.user_id = None
+
+    # Inisialisasi hasher
+    HASHER = _CodeHasher()
+
+    # Inisialisasi session state
+    session_state = _SessionState()
+        # Daftar email dan password penerima keluhan
     auth = {
         'Hilmy': '22092003',
         'admin2@gmail.com': 'password2',
@@ -236,19 +247,19 @@ if choice == 'Akses Keluhan':
     password = st.text_input('Kata Sandi', type='password')
     # Define a default value for the logged_in variable
     state = SessionState.get(logged_in=False)
-    
-    # Define the login button
-    if st.button('Login'):
-        if email in auth and auth[email] == password:
-            # Set a flag to indicate that the user has logged in
-            logged_in = True
-            st.success('Login berhasil')
-        else:
-            st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
-
-    if state.logged_in:
-        # Fungsi untuk menampilkan halaman keluhan
-        def show_complaint_page(sheet):
+    # Fungsi untuk menampilkan halaman login
+    def show_login_page():
+        email = st.text_input('Email')
+        password = st.text_input('Password', type='password')
+        if st.button('Login'):
+            if email in auth and auth[email] == password:
+                # Set session state untuk menandai pengguna telah login
+                session_state.logged_in = True
+                session_state.user_id = HASHER.to_bytes(email, salt="streamlit-demo")
+                st.success('Login berhasil')
+            else:
+                st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
+    def show_complaint_page(sheet):
                     # Tampilkan daftar keluhan yang telah diterima
                     st.header('Keluhan yang Telah Diterima')
                     keluhan = sheet.get_all_records()
@@ -321,101 +332,19 @@ if choice == 'Akses Keluhan':
                                     st.write('### Status: ', data['Status'])
                                     st.write('### Waktu Pengerjaan: ', data['Durasi Penyelesaian']) 
 
+
+
+
+
+
+                    # Tampilkan halaman login jika pengguna belum login
+    if not session_state.logged_in:
+        show_login_page()
+    # Tampilkan halaman keluhan jika pengguna telah login
+    else:
         show_complaint_page(sheet)
+     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # # Mendefinisikan fungsi untuk menampilkan animasi Lottie
-    # def load_lottie_url(url: str):
-    #     r = requests.get(url)
-    #     if r.status_code != 200:
-    #         return None
-    #     return r.json()
-
-    # # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    # url = "https://assets1.lottiefiles.com/packages/lf20_huqty7bz.json"
-    # # Menampilkan animasi Lottie di tampilan utama Streamlit
-    # st_lottie(load_lottie_url(url))
-
-    # # Fungsi untuk mengakses Google Spreadsheet
-    # def access_spreadsheet():
-    #     scope = ['https://spreadsheets.google.com/feeds',
-    #             'https://www.googleapis.com/auth/drive']
-    #     creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
-    #     client = gspread.authorize(creds)
-    #     sheet= client.open('Keluhan Mahasiswa').sheet1 # ganti nama_spreadsheet dengan nama spreadsheet yang digunakan
-    #     return sheet
-
-    # # Fungsi untuk mengubah status keluhan
-    # def update_complaint_status(sheet, row, status):
-    #     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #     sheet.update_cell(row, 4, status)
-    #     sheet.update_cell(row, 5, now)
-
-    # # Daftar email dan password penerima keluhan
-    # auth = {
-    #     'Hilmy': '22092003',
-    #     'admin2@gmail.com': 'password2',
-    #     'admin3@gmail.com': 'password3',
-    #     'admin4@gmail.com': 'password4',
-    #     'admin5@gmail.com': 'password5'
-    # }
-
-    # st.title('Autentifikasi')
-    # st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
-
-    # email = st.text_input('Email')
-    # password = st.text_input('Kata Sandi', type='password')
-
-    # if st.button('Login'):
-    #     if email in auth and auth[email] == password:
-    #         st.success('Login berhasil')
-    #         # Tampilkan daftar keluhan yang telah diterima
-
-    #         st.header('Keluhan yang Telah Diterima')
-    #         keluhan = sheet.get_all_records()
-    #         for i, data in enumerate(keluhan):
-    #             if data['StatusA'] == '':
-    #                 st.write('## Keluhan #{}'.format(i+1))
-    #                 st.write('### Nama: ', data['Nama'])
-    #                 st.write('### NIM: ', data['NIM'])
-    #                 st.write('### Nomor WhatsApp: ', data['No WA'])
-    #                 st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
-    #                 st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
-    #                 st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
-    #                 waktu_pengiriman = data['Waktu Pengiriman']
-    #                 status = st.selectbox('Status', ['Diproses', 'Ditolak', 'Selesai'])
-    #                 if st.button('Simpan'):
-    #                     update_complaint_status(i+2, status)
-    #                     st.success('Status keluhan telah diubah.')
-    #                 st.write('### Status: ', data['StatusB'])
-    #     else:
-    #         st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
 
 if choice == 'Complaint Analytics':
     #Mendefinisikan fungsi untuk menampilkan animasi Lottie
@@ -429,4 +358,3 @@ if choice == 'Complaint Analytics':
     url = "https://assets9.lottiefiles.com/packages/lf20_5tl1xxnz.json"
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
-
