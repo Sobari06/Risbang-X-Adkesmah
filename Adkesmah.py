@@ -8,6 +8,7 @@ import requests
 
 
 
+
 # Google Sheets authentication
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
@@ -24,8 +25,10 @@ choice = st.sidebar.selectbox('Menu', menu)
 # Define function for adding complaint to the Google Sheets file
 def add_complaint(nama, nim, wa, tanggal, jenis_keluhan, deskripsi_keluhan):
     time_sent = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-    data = [nama, nim, wa, tanggal, jenis_keluhan, deskripsi_keluhan, time_sent, '', '', '']
+    data = [nama, nim, wa, tanggal, jenis_keluhan, deskripsi_keluhan, time_sent, "Keluhan Masuk",'', '', '']
     sheet.insert_row(data, index=2)
+
+
 
 # Define function for updating the status of a complaint
 def update_status(row, status):
@@ -55,7 +58,7 @@ if choice == 'Halaman Utama':
     nim = st.text_input('NIM')
     wa = st.text_input('No WA')
     tanggal = st.date_input('Tanggal')
-    jenis_keluhan = st.selectbox('Jenis Keluhan', ['Akademik', 'Non-Akademik'])
+    jenis_keluhan = st.selectbox('Jenis Keluhan', ['Akademik dan Non-Akademik', 'Sarana dan Prasana','Pelayanan','Finansial'])
     deskripsi_keluhan = st.text_area('Deskripsi Keluhan')
 
     # Add complaint to Google Sheets file
@@ -73,6 +76,7 @@ if choice == 'Halaman Utama':
             st.warning('Harap isi Deskripsi Keluhan.')
         else:
             add_complaint(nama, nim, wa, str(tanggal), jenis_keluhan, deskripsi_keluhan)
+            # 'update_complaint_status(sheet, sheet.row_count, "Keluhan Masuk")'
             st.success('Keluhan berhasil dikirim.')
 
   
@@ -105,6 +109,7 @@ if choice == 'Survei Kepuasan':
     def add_survei(name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback):
         data = [name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback]
         sheet1.insert_row(data, index=2)
+    
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
     url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
     # Menampilkan animasi Lottie di tampilan utama Streamlit
@@ -217,11 +222,28 @@ if choice == 'Akses Keluhan':
         sheet= client.open('Keluhan Mahasiswa').sheet1 # ganti nama_spreadsheet dengan nama spreadsheet yang digunakan
         return sheet
 
-    # Fungsi untuk mengubah status keluhan
-    def update_complaint_status(sheet, row, status):
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        sheet.update_cell(row, 4, status)
-        sheet.update_cell(row, 5, now)
+# Define a function to get the latest complaint data from the Google Sheet
+    # Fungsi untuk mengupdate durasi penyelesaian keluhan di Google Spreadsheet
+    def update_complaint_duration(sheet, row, durasi_penyelesaian):
+        sheet.update_cell(row, 10, str(durasi_penyelesaian))
+
+    def update_complaint_time(sheet, row, waktu_selesai):
+    # Mengupdate waktu penyelesaian pada kolom "Waktu Penyelesaian"
+        waktu_selesai_str = waktu_selesai.strftime('%Y-%m-%d %H:%M:%S.%f')
+        sheet.update_cell(row,9, waktu_selesai_str)
+    def update_complaint_status(sheet, row, status,email):
+        # Mengupdate status pada kolom "Status"
+        sheet.update_cell(row,8, status)
+        # Mengupdate email pada kolom "Penerima Keluhan"
+        sheet.update_cell(row, 11, email)
+    def update_complaint_status_(sheet, row, status):
+        # Mengupdate status pada kolom "Status"
+        sheet.update_cell(row,8, status)
+    # Fungsi untuk mendapatkan data keluhan terbaru
+    def get_latest_complaint_data(sheet):
+        data = sheet.get_all_records()[-1]
+        return data
+    
     # Define the SessionState class
     class SessionState:
         def __init__(self, **kwargs):
@@ -232,202 +254,151 @@ if choice == 'Akses Keluhan':
 
         def __repr__(self):
             return str(self.__dict__)
-    # Daftar email dan password penerima keluhan
+
     auth = {
         'Hilmy': '22092003',
-        'admin2@gmail.com': 'password2',
-        'admin3@gmail.com': 'password3',
-        'admin4@gmail.com': 'password4',
-        'admin5@gmail.com': 'password5'
+        'KingBudiSatriaHalim': 'password2',
+        'FarhanRamadhanAbdullah': 'password3',
+        'JasmitaYasmin': 'password4',
+        'RifaMahiraDrinaputeri': 'password5'
     }
-    st.title('Autentifikasi')
-    st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
 
-    email = st.text_input('Email')
-    password = st.text_input('Kata Sandi', type='password')
-    # Define a default value for the logged_in variable
-    state = SessionState(logged_in=False)
+
+    # Fungsi untuk menampilkan halaman login
+    def show_login_page():
+        st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
+        email = st.text_input('Email')
+        password = st.text_input('Kata Sandi', type='password')
+
+        if st.button('Login'):
+            if email in auth and auth[email] == password:
+                # Set a flag to indicate that the user has logged in
+                session = st.session_state
+                session.logged_in = True
+                st.session_state.email = email # tambahkan email ke dalam session state
+                st.success('Login berhasil')
+                show_complaint_page(sheet)
+            else:
+                st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
     
-    # Define the login button
-    if st.button('Login'):
-        if email in auth and auth[email] == password:
-            # Set a flag to indicate that the user has logged in
-            state.logged_in = True
-            st.success('Login berhasil')
+    def show_complaint_page(sheet):
+                # Tampilkan daftar keluhan yang telah diterima
+                st.header('Keluhan yang Telah Diterima')
+                keluhan = sheet.get_all_records()
+                df = pd.DataFrame(keluhan)
+                # Menampilkan filter berdasarkan status, bulan, dan kategori keluhan
+                # status_list = df['Status'].unique().tolist()
+                status_list = ['Keluhan Masuk', 'Diproses', 'Selesai']
+                selected_status = st.selectbox('Pilih Status Keluhan', status_list, key='box1')
+
+                bulan_list = pd.DatetimeIndex(df['Waktu Pengiriman']).month_name().unique().tolist()
+                selected_bulan = st.selectbox('Pilih Bulan', bulan_list, key='box2')
+
+                # kategori_list = df['Kategori Keluhan'].unique().tolist()
+                kategori_list = ['Akademik dan Non-Akademik', 'Sarana dan Prasana','Pelayanan','Finansial']
+                selected_kategori = st.selectbox('Pilih Kategori Keluhan', kategori_list, key='box3')
+
+                filtered_df = df[(df['Status'] == selected_status) & (pd.DatetimeIndex(df['Waktu Pengiriman']).month_name() == selected_bulan) & (df['Kategori Keluhan'] == selected_kategori)]
+
+                st.write('### Jumlah Keluhan: ', len(filtered_df))
+
+                for i, data in filtered_df.iterrows():
+                    if data['Status'] == 'Keluhan Masuk':
+                        st.write('## Keluhan #{}'.format(i+1))
+                        st.write('### Nama: ', data['Nama'])
+                        st.write('### NIM: ', data['NIM'])
+                        st.write('### Nomor WhatsApp: ', data['No WA'])
+                        st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
+                        st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
+                        st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
+                        waktu_pengiriman = data['Waktu Pengiriman']
+                        
+                        # Tambahkan tombol "Proses", "Tolak", dan "Selesai"
+                        st.write('### Eksekusi Keluhan')
+                        if st.button('Proses'+ str(i)):
+                              # Update status keluhan menjadi "Diproses" di Google Spreadsheet
+                            row = data.name + 2
+                            session = st.session_state
+                            email = session.email
+                            update_complaint_status(sheet, row, 'Diproses', email)      
+
+                        if st.button('Tolak'+ str(i)):
+                            # Hapus data keluhan dari Google Spreadsheet
+                            row = data.name + 2
+                            sheet.delete_row(row)
+                            st.success('Keluhan telah ditolak.')
+                        # Tampilkan data keluhan terbaru
+                            data = get_latest_complaint_data(sheet)
+                            st.write('### Data Keluhan Terbaru')
+                            st.write('Nama Pelapor:', data['Nama'])
+                            st.write('Kategori Keluhan:', data['Kategori Keluhan'])
+                            st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
+                            st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
+                            st.write('Status Keluhan:', data['Status'])
+            
+                    if data['Status'] == 'Diproses':
+                        st.write('## Keluhan #{}'.format(i+1))
+                        st.write('### Nama: ', data['Nama'])
+                        st.write('### NIM: ', data['NIM'])
+                        st.write('### Nomor WhatsApp: ', data['No WA'])
+                        st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
+                        st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
+                        st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
+                        st.write('### Dieksekusi Oleh: ', data['Penerima Keluhan'])
+                        waktu_pengiriman = data['Waktu Pengiriman']
+                        
+                        # Tambahkan tombol "Proses", "Tolak", dan "Selesai" 
+                        if st.button('Selesai'+ str(i)):
+                                # Update status keluhan menjadi "Selesai" dan hitung durasi penyelesaian di Google Spreadsheet
+                            row = data.name + 2
+                            waktu_selesai = datetime.datetime.now()
+                            waktu_pengiriman_str = data['Waktu Pengiriman']
+                            waktu_pengiriman = datetime.datetime.strptime(waktu_pengiriman_str, '%Y-%m-%d %H:%M:%S')
+                            durasi_penyelesaian = waktu_selesai - waktu_pengiriman
+                            update_complaint_status_(sheet, row, "Selesai")
+                            update_complaint_duration(sheet, row, durasi_penyelesaian)
+                            update_complaint_time(sheet, row, waktu_selesai)
+                            st.success('Keluhan telah diselesaikan')
+
+                        # Tampilkan data keluhan terbaru
+                            data = get_latest_complaint_data(sheet)
+                            st.write('### Data Keluhan Terbaru')
+                            st.write('Nama Pelapor:', data['Nama'])
+                            st.write('Kategori Keluhan:', data['Kategori Keluhan'])
+                            st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
+                            st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
+                            st.write('Status Keluhan:', data['Status'])
+                            st.write('Durasi Penyelesaian:', durasi_penyelesaian)
+                else:
+                    st.warning('Silakan pilih kategori keluhan') 
+    import streamlit as st
+
+   
+
+    # Fungsi utama
+    def main():
+        # Check if the user is already logged in
+        session = st.session_state
+        if 'logged_in' not in session:
+            session.logged_in = False
+        if session.logged_in:
+            st.write('Anda telah berhasil login')
+            show_complaint_page(sheet)
         else:
-            st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
+            show_login_page()
+
+        # Add a logout button
+        if session.logged_in:
+            if st.button('Logout'):
+                # Reset the flag to indicate that the user has logged out
+                session.logged_in = False
+                st.write('Anda telah berhasil logout')
+
+    if __name__ == '__main__':
+        # Run the app
+        main()
 
 
-    if state.logged_in:
-        # Fungsi untuk menampilkan halaman keluhan
-        def show_complaint_page(sheet):
-                    # Tampilkan daftar keluhan yang telah diterima
-                    st.header('Keluhan yang Telah Diterima')
-                    keluhan = sheet.get_all_records()
-                    df = pd.DataFrame(keluhan)
-                    # Menampilkan filter berdasarkan status, bulan, dan kategori keluhan
-                    status_list = df['Status'].unique().tolist()
-                    selected_status = st.selectbox('Pilih Status Keluhan', status_list, key='box1')
-
-                    bulan_list = pd.DatetimeIndex(df['Waktu Pengiriman']).month_name().unique().tolist()
-                    selected_bulan = st.selectbox('Pilih Bulan', bulan_list, key='box2')
-
-                    kategori_list = df['Kategori Keluhan'].unique().tolist()
-                    selected_kategori = st.selectbox('Pilih Kategori Keluhan', kategori_list, key='box3')
-
-                    filtered_df = df[(df['Status'] == selected_status) & (pd.DatetimeIndex(df['Waktu Pengiriman']).month_name() == selected_bulan) & (df['Kategori Keluhan'] == selected_kategori)]
-
-                    st.write('### Jumlah Keluhan: ', len(filtered_df))
-
-
-                    for i, data in filtered_df.iterrows():
-                                    if data['Status'] == '':
-                                        st.write('## Keluhan #{}'.format(i+1))
-                                        st.write('### Nama: ', data['Nama'])
-                                        st.write('### NIM: ', data['NIM'])
-                                        st.write('### Nomor WhatsApp: ', data['No WA'])
-                                        st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
-                                        st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
-                                        st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
-                                        waktu_pengiriman = data['Waktu Pengiriman']
-
-                    # Tambahkan pilihan status keluhan dan tombol "Simpan"
-                    status = st.selectbox('Status', ['Diproses', 'Ditolak', 'Selesai'], key='box4')
-                    if st.button('Simpan'):
-                                # Update status keluhan di Google Spreadsheet
-                                row = data.name + 2  # Index dimulai dari 0, dan ada header di baris pertama
-                                update_complaint_status(sheet, row, status)
-                                st.success('Status keluhan telah diubah.')
-
-                            # Menampilkan keluhan yang sedang diproses
-                    st.header('Keluhan yang Sedang Diproses')
-                    filtered_df = df.loc[df['Status'] == 'Diproses']
-                    if len(filtered_df) == 0:
-                                st.write('Tidak ada keluhan yang sedang diproses.')
-                    else:
-                                for i, data in filtered_df.iterrows():
-                                    st.write('## Keluhan #{}'.format(i+1))
-                                    st.write('### Nama: ', data['Nama'])
-                                    st.write('### NIM: ', data['NIM'])
-                                    st.write('### Nomor WhatsApp: ', data['No WA'])
-                                    st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
-                                    st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
-                                    st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
-                                    st.write('### Status: ', data['Status'])
-                                    st.write('### Waktu Pengerjaan: ', data['Durasi Penyelesaian'])
-
-                            # Menampilkan keluhan yang telah selesai
-                    st.header('Keluhan yang Telah Selesai')
-                    filtered_df = df.loc[df['Status'] == 'Selesai']
-                    if len(filtered_df) == 0:
-                                st.write('Tidak ada keluhan yang telah selesai.')
-                    else:
-                                for i, data in filtered_df.iterrows():
-                                    st.write('## Keluhan #{}'.format(i+1))
-                                    st.write('### Nama: ', data['Nama'])
-                                    st.write('### NIM: ', data['NIM'])
-                                    st.write('### Nomor WhatsApp: ', data['No WA'])
-                                    st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
-                                    st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
-                                    st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
-                                    st.write('### Status: ', data['Status'])
-                                    st.write('### Waktu Pengerjaan: ', data['Durasi Penyelesaian']) 
-
-        show_complaint_page(sheet)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # # Mendefinisikan fungsi untuk menampilkan animasi Lottie
-    # def load_lottie_url(url: str):
-    #     r = requests.get(url)
-    #     if r.status_code != 200:
-    #         return None
-    #     return r.json()
-
-    # # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    # url = "https://assets1.lottiefiles.com/packages/lf20_huqty7bz.json"
-    # # Menampilkan animasi Lottie di tampilan utama Streamlit
-    # st_lottie(load_lottie_url(url))
-
-    # # Fungsi untuk mengakses Google Spreadsheet
-    # def access_spreadsheet():
-    #     scope = ['https://spreadsheets.google.com/feeds',
-    #             'https://www.googleapis.com/auth/drive']
-    #     creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
-    #     client = gspread.authorize(creds)
-    #     sheet= client.open('Keluhan Mahasiswa').sheet1 # ganti nama_spreadsheet dengan nama spreadsheet yang digunakan
-    #     return sheet
-
-    # # Fungsi untuk mengubah status keluhan
-    # def update_complaint_status(sheet, row, status):
-    #     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #     sheet.update_cell(row, 4, status)
-    #     sheet.update_cell(row, 5, now)
-
-    # # Daftar email dan password penerima keluhan
-    # auth = {
-    #     'Hilmy': '22092003',
-    #     'admin2@gmail.com': 'password2',
-    #     'admin3@gmail.com': 'password3',
-    #     'admin4@gmail.com': 'password4',
-    #     'admin5@gmail.com': 'password5'
-    # }
-
-    # st.title('Autentifikasi')
-    # st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
-
-    # email = st.text_input('Email')
-    # password = st.text_input('Kata Sandi', type='password')
-
-    # if st.button('Login'):
-    #     if email in auth and auth[email] == password:
-    #         st.success('Login berhasil')
-    #         # Tampilkan daftar keluhan yang telah diterima
-
-    #         st.header('Keluhan yang Telah Diterima')
-    #         keluhan = sheet.get_all_records()
-    #         for i, data in enumerate(keluhan):
-    #             if data['StatusA'] == '':
-    #                 st.write('## Keluhan #{}'.format(i+1))
-    #                 st.write('### Nama: ', data['Nama'])
-    #                 st.write('### NIM: ', data['NIM'])
-    #                 st.write('### Nomor WhatsApp: ', data['No WA'])
-    #                 st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
-    #                 st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
-    #                 st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
-    #                 waktu_pengiriman = data['Waktu Pengiriman']
-    #                 status = st.selectbox('Status', ['Diproses', 'Ditolak', 'Selesai'])
-    #                 if st.button('Simpan'):
-    #                     update_complaint_status(i+2, status)
-    #                     st.success('Status keluhan telah diubah.')
-    #                 st.write('### Status: ', data['StatusB'])
-    #     else:
-    #         st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
 
 if choice == 'Complaint Analytics':
     #Mendefinisikan fungsi untuk menampilkan animasi Lottie
@@ -441,4 +412,51 @@ if choice == 'Complaint Analytics':
     url = "https://assets9.lottiefiles.com/packages/lf20_5tl1xxnz.json"
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
+    auth = {
+        'Hilmy': '22092003',
+        'KingBudiSatriaHalim': 'password2',
+        'FarhanRamadhanAbdullah': 'password3',
+        'JasmitaYasmin': 'password4',
+        'RifaMahiraDrinaputeri': 'password5'
+    }
+
+
+    # Fungsi untuk menampilkan halaman login
+    def show_login_page():
+        st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
+        email = st.text_input('Email')
+        password = st.text_input('Kata Sandi', type='password')
+
+        if st.button('Login'):
+            if email in auth and auth[email] == password:
+                # Set a flag to indicate that the user has logged in
+                session = st.session_state
+                session.logged_in = True
+                st.session_state.email = email # tambahkan email ke dalam session state
+                st.success('Login berhasil')
+                
+            else:
+                st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
+        # Fungsi utama
+
+    def main():
+        # Check if the user is already logged in
+        session = st.session_state
+        if 'logged_in' not in session:
+            session.logged_in = False
+        if session.logged_in:
+            st.write('Anda telah berhasil login')
+        else:
+            show_login_page()
+
+        # Add a logout button
+        if session.logged_in:
+            if st.button('Logout'):
+                # Reset the flag to indicate that the user has logged out
+                session.logged_in = False
+                st.write('Anda telah berhasil logout')
+
+    if __name__ == '__main__':
+        # Run the app
+        main()
 
