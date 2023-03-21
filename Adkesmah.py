@@ -6,7 +6,6 @@ import datetime
 from streamlit_lottie import st_lottie
 import requests 
 import numpy as np
-import matplotlib.pyplot as plt
 import plotly.express as px
 
 
