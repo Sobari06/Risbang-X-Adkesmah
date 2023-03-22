@@ -54,7 +54,7 @@ if choice == 'Halaman Utama':
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
 
-    st.title("Dashboard Pengaduan KM PKU IPB")
+    st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
 
     # Get input from user
