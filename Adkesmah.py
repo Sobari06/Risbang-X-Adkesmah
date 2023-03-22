@@ -27,9 +27,9 @@ menu = ['Halaman Utama', 'Identitas Penerima Keluhan', 'Survei Kepuasan', 'Frequ
 choice = st.sidebar.selectbox('Menu', menu)
 
 # Define function for adding complaint to the Google Sheets file
-def add_complaint(nama, nim, wa, tanggal, jenis_keluhan, deskripsi_keluhan):
+def add_complaint(nama, nim, wa, tanggal, jenis_keluhan,judul, deskripsi_keluhan):
     time_sent = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")
-    data = [nama, nim, wa, tanggal, jenis_keluhan, deskripsi_keluhan, time_sent, "Keluhan Masuk",'', '', '']
+    data = [nama, nim, wa, tanggal, jenis_keluhan, judul, deskripsi_keluhan, time_sent, "Keluhan Masuk",'', '', '']
     sheet.insert_row(data, index=2)
 
 
@@ -63,6 +63,7 @@ if choice == 'Halaman Utama':
     wa = st.text_input('No WA')
     tanggal = st.date_input('Tanggal')
     jenis_keluhan = st.selectbox('Jenis Keluhan', ['Akademik dan Non-Akademik', 'Sarana dan Prasana','Pelayanan','Finansial'])
+    judul = st.text_input('Judul Keluhan')
     deskripsi_keluhan = st.text_area('Deskripsi Keluhan')
 
     # Add complaint to Google Sheets file
@@ -76,10 +77,12 @@ if choice == 'Halaman Utama':
             st.warning('Harap isi No WA.')
         elif not jenis_keluhan:
             st.warning('Harap pilih Jenis Keluhan.')
+        elif not judul:
+            st.warning('Harap isi Judul Keluhan.')
         elif not deskripsi_keluhan:
             st.warning('Harap isi Deskripsi Keluhan.')
         else:
-            add_complaint(nama, nim, wa, str(tanggal), jenis_keluhan, deskripsi_keluhan)
+            add_complaint(nama, nim, wa, str(tanggal), jenis_keluhan, judul, deskripsi_keluhan)
             # 'update_complaint_status(sheet, sheet.row_count, "Keluhan Masuk")'
             st.success('Keluhan berhasil dikirim.')
 
@@ -230,20 +233,20 @@ if choice == 'Akses Keluhan':
     # Fungsi untuk mengupdate durasi penyelesaian keluhan di Google Spreadsheet
     def update_complaint_duration(sheet, row, durasi_penyelesaian):
         durasi_penyelesaian_jam = durasi_penyelesaian.seconds / 3600 # konversi durasi ke satuan jam
-        sheet.update_cell(row, 10, str(round(durasi_penyelesaian_jam, 2))) # membulatkan hingga 2 desimal dan mengubah ke string
+        sheet.update_cell(row, 11, str(round(durasi_penyelesaian_jam, 2))) # membulatkan hingga 2 desimal dan mengubah ke string
 
     def update_complaint_time(sheet, row, waktu_selesai):
     # Mengupdate waktu penyelesaian pada kolom "Waktu Penyelesaian"
         waktu_selesai_str = waktu_selesai.strftime('%Y-%m-%d %H:%M')
-        sheet.update_cell(row,9, waktu_selesai_str)
+        sheet.update_cell(row,10, waktu_selesai_str)
     def update_complaint_status(sheet, row, status,email):
         # Mengupdate status pada kolom "Status"
-        sheet.update_cell(row,8, status)
+        sheet.update_cell(row,9, status)
         # Mengupdate email pada kolom "Penerima Keluhan"
-        sheet.update_cell(row, 11, email)
+        sheet.update_cell(row, 12, email)
     def update_complaint_status_(sheet, row, status):
         # Mengupdate status pada kolom "Status"
-        sheet.update_cell(row,8, status)
+        sheet.update_cell(row,9, status)
     # Fungsi untuk mendapatkan data keluhan terbaru
     def get_latest_complaint_data(sheet):
         data = sheet.get_all_records()[-1]
@@ -271,8 +274,9 @@ if choice == 'Akses Keluhan':
 
     # Fungsi untuk menampilkan halaman login
     def show_login_page():
-        st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
-        email = st.text_input('Email')
+        st.title('Autentifikasi untuk Advocare')
+        st.write('Silakan masukkan Username dan kata sandi Anda untuk mengakses keluhan:')
+        email = st.text_input('Username')
         password = st.text_input('Kata Sandi', type='password')
 
         if st.button('Login'):
@@ -314,6 +318,7 @@ if choice == 'Akses Keluhan':
                         st.write('### NIM: ', data['NIM'])
                         st.write('### Nomor WhatsApp: ', data['No WA'])
                         st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
+                        st.write('### Judul Keluhan: ', data['Judul Keluhan'])
                         st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
                         st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
                         waktu_pengiriman = data['Waktu Pengiriman']
@@ -337,6 +342,7 @@ if choice == 'Akses Keluhan':
                             st.write('### Data Keluhan Terbaru')
                             st.write('Nama Pelapor:', data['Nama'])
                             st.write('Kategori Keluhan:', data['Kategori Keluhan'])
+                            st.write('### Judul Keluhan: ', data['Judul Keluhan'])
                             st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
                             st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
                             st.write('Status Keluhan:', data['Status'])
@@ -347,6 +353,7 @@ if choice == 'Akses Keluhan':
                         st.write('### NIM: ', data['NIM'])
                         st.write('### Nomor WhatsApp: ', data['No WA'])
                         st.write('### Kategori Keluhan: ', data['Kategori Keluhan'])
+                        st.write('### Judul Keluhan: ', data['Judul Keluhan'])
                         st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
                         st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
                         st.write('### Dieksekusi Oleh: ', data['Penerima Keluhan'])
@@ -370,6 +377,7 @@ if choice == 'Akses Keluhan':
                             st.write('### Data Keluhan Terbaru')
                             st.write('Nama Pelapor:', data['Nama'])
                             st.write('Kategori Keluhan:', data['Kategori Keluhan'])
+                            st.write('### Judul Keluhan: ', data['Judul Keluhan'])
                             st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
                             st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
                             st.write('Status Keluhan:', data['Status'])
@@ -416,235 +424,178 @@ if choice == 'Complaint Analytics':
     url = "https://assets9.lottiefiles.com/packages/lf20_5tl1xxnz.json"
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
-    def Complaint_Graph():
+    
+    def Complaint_Graph_For_Viewers():
         # Load data
-        #https://docs.google.com/spreadsheets/d/1kYAFrH0Ge5XxMmNkYKSSbysK2QXOe5cDPu9Y-u1GlXg/edit#gid=0
-        sheet_id1 = '1kYAFrH0Ge5XxMmNkYKSSbysK2QXOe5cDPu9Y-u1GlXg'
-        data= pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id1}/export?format=csv')
        
+        keluhan = sheet.get_all_records()
+        data1 = pd.DataFrame(keluhan)
+      
 
-        # def keluhan_per_bulan(df):
-        # # Membuat kolom baru berdasarkan bulan keluhan dibuat
-        #     df['bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%Y-%m')
+        # Hitung jumlah keluhan dengan status Diproses
+        keluhan_diproses = len(data1[data1['Status'] == 'Diproses'])
+        # Hitung jumlah keluhan dengan status Selesai
+        keluhan_selesai = len(data1[data1['Status'] == 'Selesai'])
+        # Hitung jumlah keluhan dengan status Keluhan Masuk
+        keluhan_masuk = len(data1[data1['Status'] == 'Keluhan Masuk'])
+        # Hitung total jumlah keluhan
+        total_keluhan = keluhan_diproses + keluhan_masuk + keluhan_selesai 
 
-        #     # Menghitung jumlah keluhan berdasarkan jenis keluhan dan bulan
-        #     keluhan_jenis = df.groupby(['Kategori Keluhan', 'bulan']).size().reset_index(name='jumlah_keluhan')
+        # Hitung jumlah keluhan finansial
+        Finansial = len(data1[data1['Kategori Keluhan'] == 'Finansial'])
+        # Hitung jumlah keluhan akademik
+        Akademik = len(data1[data1['Kategori Keluhan'] == 'Akademik dan Non-Akademik'])
+        # Hitung jumlah keluhan sarana
+        Sarana = len(data1[data1['Kategori Keluhan'] == 'Sarana dan Prasana'])
+        # Hitung jumlah keluhan pelayanan
+        Pelayanan = len(data1[data1['Kategori Keluhan'] == 'Pelayanan'])
+        st.title('Dashboard Program Pengaduan Keluhan Mahasiswa')
+        st.markdown('-------------')
+        st.subheader('Metrik Total Keluhan')
+        # st.markdown('''
+        #     Grafik time series interaktif untuk menampilkan nilai performa Kabinet Gantari Arti.
+        #     ''')
 
-        #     # Menghitung jumlah keluhan berdasarkan bulan
-        #     keluhan_bulan = df.groupby('bulan').size().reset_index(name='jumlah_keluhan')
+         # Tampilkan metrik dalam kolom
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Total Keluhan", total_keluhan)
+        with col2:
+            st.metric("Keluhan Diproses", keluhan_diproses)
+        with col3:
+            st.metric("Keluhan Selesai", keluhan_selesai)
+        with col4:
+            st.metric("Keluhan Masuk", keluhan_masuk)
 
-        #     return keluhan_jenis, keluhan_bulan
+        st.write("")  # Tambahkan spasi kosong
 
+        # Tampilkan metrik dalam kolom
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Finansial", Finansial)
+        with col2:
+            st.metric("Akademik dan Non-Akademik", Akademik)
+        with col3:
+            st.metric("Sarana dan Prasana", Sarana)
+        with col4:
+            st.metric("Pelayanan", Pelayanan)
 
-
-        #     # Membuat kolom baru berdasarkan bulan keluhan dibuat
-        #     df['bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%Y-%m')
-
-        #     # Menghitung jumlah keluhan berdasarkan jenis keluhan dan bulan
-        #     keluhan_jenis = df.groupby(['Kategori Keluhan', 'bulan']).size().reset_index(name='jumlah_keluhan')
-
-        #     # Menghitung jumlah keluhan berdasarkan bulan
-        #     keluhan_bulan = df.groupby('bulan').size().reset_index(name='jumlah_keluhan')
-
-        #     return keluhan_jenis, keluhan_bulan
-        # def keluhan_selesai(df):
-        #     # Membuat kolom baru berdasarkan bulan keluhan diselesaikan
-        #     df['bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%Y-%m')
-
-        #     # Menghitung jumlah keluhan yang diselesaikan dan diproses berdasarkan bulan
-        #     keluhan_selesai = df.groupby('bulan')['keluhan_selesai'].agg(['sum', 'count']).reset_index()
-        #     keluhan_selesai.columns = ['bulan', 'jumlah_selesai', 'jumlah_diproses']
-
-        #     return keluhan_selesai
-        
-        # def total_keluhan(df):
-        #     return df.shape[0]
-
-        # # Tampilkan data keluhan
-        # st.write('## Data Keluhan')
-        # st.dataframe(df)
-
-        # # Tampilkan grafik jumlah keluhan dan keluhan jenis berdasarkan bulan
-        # keluhan_jenis, keluhan_bulan = keluhan_per_bulan(df)
-        # st.write('## Grafik Jumlah Keluhan dan Jenis Keluhan per Bulan')
-        # st.bar_chart(keluhan_bulan.set_index('bulan'))
-        # st.bar_chart(keluhan_jenis.set_index(['bulan', 'Kategori Keluhan']))
-
-        # # Tampilkan grafik jumlah keluhan yang diselesaikan dan diproses berdasarkan bulan
-        # keluhan_selesai = keluhan_selesai(df)
-        # st.write('## Grafik Jumlah Keluhan yang Diselesaikan dan Diproses per Bulan')
-        # st.bar_chart(keluhan_selesai.set_index('bulan'))
-        # # Tampilkan metrik total jumlah keluhan
-        # total = total_keluhan(df)
-        # st.write(f'## Total Keluhan: {total}')
-
-        # Load satisfaction data
-        #https://docs.google.com/spreadsheets/d/154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc/edit#gid=0
-    #     sheet_id2 = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-    #     df1 = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id2}/export?format=csv')
-    #     # Replace non-numeric values with NaN
-        data['Durasi Penyelesaian (jam)'] = pd.to_numeric(data['Durasi Penyelesaian (jam)'], errors='coerce')
-
-        # Remove any rows containing NaN values
-        data = data.dropna(subset=['Durasi Penyelesaian (jam)'])
-
-        # Convert the column to float data type
-        data['Durasi Penyelesaian (jam)'] = data['Durasi Penyelesaian (jam)'].astype(float)
-
-        # Calculate average resolution time
-        avg_resolution_time = int(data['Durasi Penyelesaian (jam)'].mean())
-        # Create metric
-        st.metric(label="Average resolution time", value=format(avg_resolution_time, '.2f'))
-       # membaca data frame dari Google Sheet
-
-    #     # create bar plot using plotly
-    #     fig = px.bar(df1, x='Tanggal', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
-
-    #     # display bar plot using Streamlit
-    #     st.plotly_chart(fig)
-
-
-        # membaca data frame dari Google Sheet
-        sheet_id2 = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-        df1 = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id2}/export?format=csv')
-
-        # # Menambahkan kolom bulan pada data frame
-        # df1['Bulan'] = pd.to_datetime(df1['Tanggal']).dt.strftime('%B')
-
-        # # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
-        # avg_metrics = df1.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
-
-        # # Sort data frame berdasarkan bulan
-        # avg_metrics = avg_metrics.sort_values('Bulan')
-
-        # # Create bar plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
-        # fig = px.bar(avg_metrics, x='Bulan', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
-        # st.plotly_chart(fig)   
-
-        # # membaca data frame dari Google Sheet
-        # sheet_id2 = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-        # df1 = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id2}/export?format=csv')
-
-        # # Menambahkan kolom bulan pada data frame
-        # df1['Bulan'] = pd.to_datetime(df1['Tanggal']).dt.strftime('%B')
-
-        # # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
-        # avg_metrics = df1.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
-
-        # # Sort data frame berdasarkan bulan
-        # avg_metrics = avg_metrics.sort_values('Bulan')
-
-        # # Create bar plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
-        # fig = px.bar(avg_metrics, x='Bulan', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
-        # st.plotly_chart(fig)
-
-        # # Tampilkan metric untuk setiap kolom
-        # for metric in ['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']:
-        #     st.metric(label=metric, value=avg_metrics[metric].mean(), delta=avg_metrics[metric].diff().mean())
-
-
-        # membaca data frame dari Google Sheet
-        sheet_id2 = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-        df1 = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id2}/export?format=csv')
-
-        # Menambahkan kolom bulan pada data frame
-        df1['Bulan'] = pd.to_datetime(df1['Tanggal']).dt.strftime('%B')
-
-        # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
-        avg_metrics = df1.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
-
-        # Sort data frame berdasarkan bulan
-        avg_metrics = avg_metrics.sort_values('Bulan')
-
-        # Create bar plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
-        fig = px.bar(avg_metrics, x='Bulan', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
+#       https://docs.google.com/spreadsheets/d/1dg646TkJVnWc1bIaixjvztcOT-u8walbV7jrOHqhky0/edit#gid=0
+        sheet_id3 = '1dg646TkJVnWc1bIaixjvztcOT-u8walbV7jrOHqhky0'
+        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id3}/export?format=csv') 
+        fig = px.line(df, x='Bulan', y='Jumlah Keluhan', title='Jumlah Keluhan per Bulan')
+        st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Bulan')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap bulannya
+            ''')
         st.plotly_chart(fig)
 
-        # Create dropdown untuk sortir data berdasarkan bulan untuk setiap metric
-        sort_options = ['Ascending', 'Descending']
-        sort_by = st.selectbox('Sort by', avg_metrics.columns[1:], key='sort_by')
 
-        if st.sidebar.checkbox('Show metrics'):
-            for metric in avg_metrics.columns[1:]:
-                sorted_avg_metrics = avg_metrics.sort_values(sort_by, ascending=sort_options[0] == 'Ascending')
-                metric_value = sorted_avg_metrics[metric].mean()
-                metric_delta = sorted_avg_metrics[metric].diff().mean()
-                st.metric(label=metric, value=f"{metric_value:.2f}", delta=f"{metric_delta:.2f}")
+      # https://docs.google.com/spreadsheets/d/1N5sBo1NvdkIcaprSZiVlZaih-UNTunpwzeopwQLnNAI/edit#gid=0
+        sheet_id4 = '1N5sBo1NvdkIcaprSZiVlZaih-UNTunpwzeopwQLnNAI'
+        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id4}/export?format=csv') 
+        y_columns = ['Finansial', 'Akademik dan Non-Akademik', 'Sarana dan Prasana', 'Pelayanan']
+        st.title('Stacked Chart (Time Series) Frekuensi Kategori Keluhan Mahasiswa Tiap Bulan')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya .
+            ''')
+        fig = px.bar(df, x='Bulan', y=y_columns, title='Jumlah Keluhan per Bulan')
+        st.plotly_chart(fig)
 
-        # membaca data frame dari Google Sheet
-        # sheet_id2 = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-        # df1 = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id2}/export?format=csv')
 
-        # # Menambahkan kolom bulan pada data frame
-        # df1['Bulan'] = pd.to_datetime(df1['Tanggal']).dt.strftime('%B')
+       
+        st.markdown('-------------')
+        # Konversi kolom Tanggal menjadi format tanggal
+        data1 = pd.DataFrame(data1)
+        data1 = data1.drop(columns=['Waktu Penyelesaian', 'Durasi Penyelesaian (jam)','Penerima Keluhan', 'Bulan'])
+        # data = pd.DataFrame(data, columns=['Tanggal', 'Kategori Keluhan', 'Status'])
+        # st.write(data1)
+        data1['Tanggal'] = pd.to_datetime(data1['Tanggal'], errors='coerce')
 
-        # # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
-        # avg_metrics = df1.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
+        # Buat pilihan sortir berdasarkan bulan
+        sort_by_month = st.selectbox('Sortir berdasarkan bulan:', options=data1['Tanggal'].dt.month_name().unique())
 
-        # # Sort data frame berdasarkan bulan
-        # avg_metrics = avg_metrics.sort_values('Bulan')
+        # Filter data berdasarkan bulan yang dipilih
+        filtered_data = data1[data1['Tanggal'].dt.month_name() == sort_by_month]
 
-        # # Create dropdown untuk sortir data berdasarkan bulan untuk setiap metric
-        # sort_options = ['Ascending', 'Descending']
-        # sort_by = st.selectbox('Sort by', avg_metrics.columns[1:], key='sort_by')
+        # Tampilkan grafik jumlah keluhan per hari menggunakan Plotly Express
+        
+        fig = px.line(filtered_data, x='Tanggal', y=filtered_data.index, title='Jumlah Keluhan per Hari')
 
-        # if st.sidebar.checkbox('Show metrics'):
-        #     for metric in avg_metrics.columns[1:]:
-        #         sorted_avg_metrics = avg_metrics.sort_values(sort_by, ascending=sort_options[0] == 'Ascending')
-        #         metric_value = sorted_avg_metrics[metric].mean()
-        #         metric_delta = sorted_avg_metrics[metric].diff().mean()
-        #         st.metric(label=metric, value=f"{metric_value:.2f}", delta=f"{metric_delta:.2f}")
+        # Tampilkan grafik kategori keluhan menggunakan Plotly Express
+       
+        fig2 = px.histogram(filtered_data, x='Kategori Keluhan', title='Kategori Keluhan')
 
-        # # Create dropdown untuk memilih bulan
-        # selected_month = st.sidebar.selectbox('Select month', options=avg_metrics['Bulan'], index=len(avg_metrics)-1)
+        # Tampilkan grafik status keluhan menggunakan Plotly Express
+       
+        fig3 = px.pie(filtered_data, values=filtered_data.index, names='Status', title='Status Keluhan')
 
-        # # Membuat data frame dengan nilai hanya pada bulan yang dipilih
-        # selected_month_data = avg_metrics[avg_metrics['Bulan'] == selected_month].reset_index(drop=True)
+        # Tampilkan grafik jumlah keluhan per kategori menggunakan Plotly Express
+       
+        # fig4 = px.bar(filtered_data, x='Kategori Keluhan', y=filtered_data.index, title='Jumlah Keluhan per Kategori')
 
-        # # Menampilkan rata-rata dan trend setiap metric untuk bulan yang dipilih
-        # if selected_month_data.shape[1] > 1:
-        #     for i in range(selected_month_data.shape[1]-1):
-        #         metric = selected_month_data.columns[i+1]
-        #         metric_value = selected_month_data[metric].iloc[0]
-        #         metric_trend = selected_month_data[metric].iloc[0] - selected_month_data[metric].iloc[1]
-        #         st.metric(label=metric, value=f"{metric_value:.2f}", delta=f"{metric_trend:.2f}")
-        # else:
-        #     st.write("No data available for the selected month.")
+        # Tampilkan grafik menggunakan Streamlit
+        st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Hari')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap harinya
+            ''')
 
-        # for i in range(selected_month_data.shape[1]-1):
-        #     metric = selected_month_data.columns[i+1]
-        #     metric_value = selected_month_data[metric].iloc[0]
-        #     metric_trend = selected_month_data[metric].iloc[0] - selected_month_data[metric].iloc[1]
-        #     st.metric(label=metric, value=f"{metric_value:.2f}", delta=f"{metric_trend:.2f}")
+        st.plotly_chart(fig)
+        st.title('Histogram Frekuensi Kategori Keluhan Mahasiswa')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya.
+            ''')
+        st.plotly_chart(fig2)
+        st.title('Pie Chart Frekuensi Status Keluhan Mahasiswa')
+        st.markdown('''
+             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
+            ''')
+        st.plotly_chart(fig3)
+        # st.title('Grafik Time Series Performa Kabinet Gantari Arti')
+        # st.markdown('''
+        #     Grafik time series interaktif untuk menampilkan nilai performa Kabinet Gantari Arti.
+        #     ''')
+        # st.plotly_chart(fig4)
 
-        # # membaca data frame dari Google Sheet
-        # sheet_id = '154rG3WMobkWhHP4f6GjBFZLyJbxa7pw3RN3j2tESemc'
-        # df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv')
+        # Preprocess data
+        data1['Tanggal'] = pd.to_datetime(data1['Tanggal'], format='%Y-%m-%d')
+        data1['Bulan'] = data1['Tanggal'].dt.strftime('%Y-%m')
 
-        # # Menambahkan kolom bulan pada data frame
-        # df['Bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%B')
+        # # Create a select box to filter by month
+        # bulan = st.selectbox('Pilih bulan', sorted(data1['Bulan'].astype(str).unique())) 
 
-        # # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
-        # avg_metrics = df.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
+        # # Filter data by month
+        # data_bulan = data1[data1['Bulan'] == bulan]
 
-        # # Sort data frame berdasarkan bulan
-        # avg_metrics = avg_metrics.sort_values('Bulan')
+        # # Create a time series chart for complaints resolved per month
+        # resolved = data_bulan[data_bulan['Status'] == 'Selesai']
+        # resolved_count = resolved.groupby('Tanggal').count()['Status'].resample('D').sum()
+        # fig_resolved = px.line(resolved_count, x=resolved_count.index, y=resolved_count.values)
+        # st.plotly_chart(fig_resolved)
 
-        # # Create bar plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
-        # fig = px.bar(avg_metrics, x='Bulan', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
-        # st.plotly_chart(fig)
 
-        # # Tampilkan metric untuk setiap kolom
-        # st.write('## Metrics')
-        # metric_sort = st.selectbox('Select metric to sort by', ['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'])
-        # avg_metrics = avg_metrics.sort_values(metric_sort, ascending=False)
+    def Complaint_Graph():
+        keluhan = sheet.get_all_records()
+        data1 = pd.DataFrame(keluhan)
+        data1['Durasi Penyelesaian (jam)'] = pd.to_numeric(data1['Durasi Penyelesaian (jam)'], errors='coerce')
 
-        # for metric in ['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']:
-        #     st.write('###', metric)
-        #     st.write(f"Rata-rata nilai: {avg_metrics[metric].mean():.2f}")
-        #     st.write(f"Tren: {avg_metrics[metric].diff().mean():+.2f}")
-        #     st.write('---')
+        # Remove any rows containing NaN values
+        data2 = data1.dropna(subset=['Durasi Penyelesaian (jam)'])
 
+        # Calculate average resolution time
+        avg_resolution_time =(data2['Durasi Penyelesaian (jam)'].mean())
+
+
+        st.write("")  # Tambahkan spasi kosong
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write("")  # Tambahkan spasi kosong
+        with col2:
+            st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
+
+
+            
 
 
 
@@ -659,8 +610,10 @@ if choice == 'Complaint Analytics':
 
     # Fungsi untuk menampilkan halaman login
     def show_login_page():
-        st.write('Silakan masukkan email dan kata sandi Anda untuk mengakses keluhan:')
-        email = st.text_input('Email')
+        Complaint_Graph_For_Viewers()
+        st.title('Autentifikasi untuk Advocare')
+        st.write('Silakan masukkan username dan kata sandi Anda untuk melihat Evaluasi Program Keluhan Mahasiswa secara Statistik:')
+        email = st.text_input('Username')
         password = st.text_input('Kata Sandi', type='password')
 
         if st.button('Login'):
@@ -670,7 +623,7 @@ if choice == 'Complaint Analytics':
                 session.logged_in = True
                 st.session_state.email = email # tambahkan email ke dalam session state
                 st.success('Login berhasil')
-                Complaint_Graph()
+                
 
 
             else:
@@ -685,6 +638,7 @@ if choice == 'Complaint Analytics':
         if session.logged_in:
             st.write('Anda telah berhasil login')
             Complaint_Graph()
+            
         else:
             show_login_page()
 
