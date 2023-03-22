@@ -449,7 +449,7 @@ if choice == 'Complaint Analytics':
         Sarana = len(data1[data1['Kategori Keluhan'] == 'Sarana dan Prasana'])
         # Hitung jumlah keluhan pelayanan
         Pelayanan = len(data1[data1['Kategori Keluhan'] == 'Pelayanan'])
-        st.title('Dashboard Program Pengaduan Keluhan Mahasiswa')
+        st.title('Dashboard Program Pengaduan Keluhan KM PKU IPB')
         st.markdown('-------------')
         st.subheader('Metrik Total Keluhan')
         # st.markdown('''
