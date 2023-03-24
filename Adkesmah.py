@@ -12,7 +12,7 @@ import plotly.express as px
 
 
 
-
+st.set_page_config(page_title='Keluhan Mahasiswa', page_icon=':mortar_board:', layout='wide')
 # Google Sheets authentication
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
