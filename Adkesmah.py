@@ -12,7 +12,19 @@ import plotly.express as px
 
 
 
-st.set_page_config(page_title='Keluhan Mahasiswa', page_icon=':mortar_board:', layout='wide')
+# st.set_page_config(page_title='Keluhan Mahasiswa', page_icon=':mortar_board:', layout='wide')
+# Mengatur konfigurasi tampilan Streamlit
+def set_page_config():
+    if st._is_running_with_streamlit:
+        st.set_page_config(
+            page_title="Char Gantari",
+            page_icon=":mortar_board:",
+            layout="wide",
+            initial_sidebar_state="expanded",
+        )
+
+# Memanggil fungsi set_page_config()
+set_page_config()
 # Google Sheets authentication
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('united-option-379311-32c22a337d18.json', scope)
