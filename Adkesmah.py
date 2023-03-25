@@ -313,6 +313,7 @@ if choice == 'Akses Keluhan':
 
                 for i, data in filtered_df.iterrows():
                     if data['Status'] == 'Keluhan Masuk':
+                        st.markdown('-------------')
                         st.write('## Keluhan #{}'.format(i+1))
                         st.write('### Nama: ', data['Nama'])
                         st.write('### NIM: ', data['NIM'])
@@ -322,9 +323,11 @@ if choice == 'Akses Keluhan':
                         st.write('### Deskripsi Keluhan: ', data['Deskripsi Keluhan'])
                         st.write('### Waktu Pengiriman: ', data['Waktu Pengiriman'])
                         waktu_pengiriman = data['Waktu Pengiriman']
+                      
                         
                         # Tambahkan tombol "Proses", "Tolak", dan "Selesai"
                         st.write('### Eksekusi Keluhan')
+                        st.markdown('-------------')
                         if st.button('Proses'+ str(i)):
                             # Update status keluhan menjadi "Diproses" di Google Spreadsheet
                             row = data.name + 2
@@ -346,6 +349,7 @@ if choice == 'Akses Keluhan':
                             st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
                             st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
                             st.write('Status Keluhan:', data['Status'])
+                        
             
                     if data['Status'] == 'Diproses':
                         st.write('## Keluhan #{}'.format(i+1))
@@ -382,10 +386,8 @@ if choice == 'Akses Keluhan':
                             st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
                             st.write('Status Keluhan:', data['Status'])
                             st.write('Durasi Penyelesaian:', durasi_penyelesaian)
-                else:
-                    st.warning('Silakan pilih kategori keluhan') 
-    import streamlit as st
-
+              
+   
    
 
     # Fungsi utama
@@ -480,37 +482,121 @@ if choice == 'Complaint Analytics':
         with col4:
             st.metric("Pelayanan", Pelayanan)
 
-#       https://docs.google.com/spreadsheets/d/1dg646TkJVnWc1bIaixjvztcOT-u8walbV7jrOHqhky0/edit#gid=0
-        sheet_id3 = '1dg646TkJVnWc1bIaixjvztcOT-u8walbV7jrOHqhky0'
-        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id3}/export?format=csv') 
-        fig = px.line(df, x='Bulan', y='Jumlah Keluhan', title='Jumlah Keluhan per Bulan')
+        data = pd.DataFrame(data1)
+        # Ubah tipe data kolom tanggal menjadi datetime
+        data["Tanggal"] = pd.to_datetime(data["Tanggal"])
+
+        # Urutkan data berdasarkan tanggal
+        data = data.sort_values("Tanggal")
+        # Hitung jumlah keluhan tiap bulan
+        keluhan_per_bulan = (
+            data.groupby(pd.Grouper(key="Tanggal", freq="M"))
+            .size()
+            .reset_index(name="Jumlah Keluhan")
+        )
+
+        # # Tambahkan data bulan September dan seterusnya (Di Akhir)===========-=-=-=-=-=-=-=-=-=
+        # for i in range(5, 13):
+        #     if keluhan_per_bulan["Tanggal"].dt.month.isin([i]).any():
+        #         continue
+        #     keluhan_per_bulan = keluhan_per_bulan.append(
+        #         {"Tanggal": pd.to_datetime(f"2023-{i}-01"), "Jumlah Keluhan": 0},
+        #         ignore_index=True,
+        #     )
+
+        # Tampilkan grafik menggunakan Plotly Express
+       
+         # Tampilkan line chart
+        st.subheader('Jumlah Keluhan Tiap Bulan')
+        fig = px.line(keluhan_per_bulan, x="Tanggal", y="Jumlah Keluhan")
         st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Bulan')
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap bulannya
             ''')
+                # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
         st.plotly_chart(fig)
 
 
-      # https://docs.google.com/spreadsheets/d/1N5sBo1NvdkIcaprSZiVlZaih-UNTunpwzeopwQLnNAI/edit#gid=0
-        sheet_id4 = '1N5sBo1NvdkIcaprSZiVlZaih-UNTunpwzeopwQLnNAI'
-        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id4}/export?format=csv') 
-        y_columns = ['Finansial', 'Akademik dan Non-Akademik', 'Sarana dan Prasana', 'Pelayanan']
+
+
+
+        df = pd.DataFrame(data1)
+        # Convert tanggal column to datetime type
+        df['Tanggal'] = pd.to_datetime(df['Tanggal'])
+
+        # Extract year and month from tanggal column
+        df['Year'] = df['Tanggal'].dt.year
+        df['Month'] = df['Tanggal'].dt.month_name()
+
+        # Group data by Year, Month, and Kategori keluhan
+        df_grouped = df.groupby(['Year', 'Month', 'Kategori Keluhan']).size().reset_index(name='Jumlah')
+        # Create list of months in order from March to October
+        month_order = ['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October']
+
+        # Sort the Month column based on month_order
+        df_grouped['Month'] = pd.Categorical(df_grouped['Month'], categories=month_order, ordered=True)
+        df_grouped = df_grouped.sort_values('Month')
+
+        # Create stacked chart time series using plotly express
+        fig = px.area(df_grouped, x='Month', y='Jumlah', color='Kategori Keluhan', line_group='Kategori Keluhan',
+                    hover_name='Kategori Keluhan', title='Jumlah Keluhan Berdasarkan Kategori Keluhan Tiap Bulan')
+
+        
+        # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
+         # Tampilkan stacked chart
+        st.subheader('Jumlah Keluhan Tiap Bulan Berdasarkan Kategori')
+   
         st.title('Stacked Chart (Time Series) Frekuensi Kategori Keluhan Mahasiswa Tiap Bulan')
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya .
             ''')
-        fig = px.bar(df, x='Bulan', y=y_columns, title='Jumlah Keluhan per Bulan')
         st.plotly_chart(fig)
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
        
         st.markdown('-------------')
         # Konversi kolom Tanggal menjadi format tanggal
         data1 = pd.DataFrame(data1)
+        # Drop kolom yang tidak diperlukan
         data1 = data1.drop(columns=['Waktu Penyelesaian', 'Durasi Penyelesaian (jam)','Penerima Keluhan', 'Bulan'])
-        # data = pd.DataFrame(data, columns=['Tanggal', 'Kategori Keluhan', 'Status'])
-        # st.write(data1)
+
+        # Ubah tipe data kolom Tanggal menjadi datetime
         data1['Tanggal'] = pd.to_datetime(data1['Tanggal'], errors='coerce')
+
+        # Menambahkan tanggal yang hilang dengan nilai 0
+        date_range = pd.date_range(start=data1['Tanggal'].min(), end=data1['Tanggal'].max(), freq='D')
+        date_range = pd.DataFrame(date_range, columns=['Tanggal'])
+        data1 = pd.merge(data1, date_range, how='right', on='Tanggal')
+        data1['Jumlah Keluhan'] = data1.groupby('Tanggal')['Status'].transform('count')
 
         # Buat pilihan sortir berdasarkan bulan
         sort_by_month = st.selectbox('Sortir berdasarkan bulan:', options=data1['Tanggal'].dt.month_name().unique())
@@ -518,11 +604,10 @@ if choice == 'Complaint Analytics':
         # Filter data berdasarkan bulan yang dipilih
         filtered_data = data1[data1['Tanggal'].dt.month_name() == sort_by_month]
 
-        # Tampilkan grafik jumlah keluhan per hari menggunakan Plotly Express
-        
-        fig = px.line(filtered_data, x='Tanggal', y=filtered_data.index, title='Jumlah Keluhan per Hari')
+        # Hitung jumlah keluhan per hari dan buat grafik menggunakan Plotly Express
+        daily_counts = filtered_data.groupby('Tanggal')['Status'].count().reset_index(name='Jumlah Keluhan')
+        fig = px.line(daily_counts, x='Tanggal', y='Jumlah Keluhan', title='Jumlah Keluhan per Hari')
 
-        # Tampilkan grafik kategori keluhan menggunakan Plotly Express
        
         fig2 = px.histogram(filtered_data, x='Kategori Keluhan', title='Kategori Keluhan')
 
@@ -530,48 +615,49 @@ if choice == 'Complaint Analytics':
        
         fig3 = px.pie(filtered_data, values=filtered_data.index, names='Status', title='Status Keluhan')
 
-        # Tampilkan grafik jumlah keluhan per kategori menggunakan Plotly Express
-       
-        # fig4 = px.bar(filtered_data, x='Kategori Keluhan', y=filtered_data.index, title='Jumlah Keluhan per Kategori')
-
         # Tampilkan grafik menggunakan Streamlit
         st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Hari')
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap harinya
             ''')
+         # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
 
         st.plotly_chart(fig)
         st.title('Histogram Frekuensi Kategori Keluhan Mahasiswa')
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya.
             ''')
+         # Disable zooming
+        fig2.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
         st.plotly_chart(fig2)
         st.title('Pie Chart Frekuensi Status Keluhan Mahasiswa')
         st.markdown('''
              Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
             ''')
+         # Disable zooming
+        fig3.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
         st.plotly_chart(fig3)
-        # st.title('Grafik Time Series Performa Kabinet Gantari Arti')
-        # st.markdown('''
-        #     Grafik time series interaktif untuk menampilkan nilai performa Kabinet Gantari Arti.
-        #     ''')
-        # st.plotly_chart(fig4)
+    
 
         # Preprocess data
         data1['Tanggal'] = pd.to_datetime(data1['Tanggal'], format='%Y-%m-%d')
         data1['Bulan'] = data1['Tanggal'].dt.strftime('%Y-%m')
-
-        # # Create a select box to filter by month
-        # bulan = st.selectbox('Pilih bulan', sorted(data1['Bulan'].astype(str).unique())) 
-
-        # # Filter data by month
-        # data_bulan = data1[data1['Bulan'] == bulan]
-
-        # # Create a time series chart for complaints resolved per month
-        # resolved = data_bulan[data_bulan['Status'] == 'Selesai']
-        # resolved_count = resolved.groupby('Tanggal').count()['Status'].resample('D').sum()
-        # fig_resolved = px.line(resolved_count, x=resolved_count.index, y=resolved_count.values)
-        # st.plotly_chart(fig_resolved)
 
 
     def Complaint_Graph():
@@ -652,4 +738,3 @@ if choice == 'Complaint Analytics':
     if __name__ == '__main__':
         # Run the app
         main()
-
