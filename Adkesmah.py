@@ -15,7 +15,6 @@ import plotly.express as px
 # st.set_page_config(page_title='Keluhan Mahasiswa', page_icon=':mortar_board:', layout='wide')
 # Mengatur konfigurasi tampilan Streamlit
 def set_page_config():
-    if st._is_running_with_streamlit:
         st.set_page_config(
             page_title="Char Gantari",
             page_icon=":mortar_board:",
