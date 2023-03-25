@@ -525,7 +525,13 @@ if choice == 'Complaint Analytics':
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap bulannya
             ''')
 #      
-#       fig.update_layout(hovermode='x')
+# 
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
         st.plotly_chart(fig)
 
 
