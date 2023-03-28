@@ -6,4 +6,4 @@ gspread
 oauth2client
 streamlit-lottie
 plotly-express
-psycopg2
+
