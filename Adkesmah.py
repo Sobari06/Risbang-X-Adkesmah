@@ -7,17 +7,19 @@ from streamlit_lottie import st_lottie
 import requests 
 import numpy as np
 import plotly.express as px
+import psycopg2
 
 
 
 
 
 # st.set_page_config(page_title='Keluhan Mahasiswa', page_icon=':mortar_board:', layout='wide')
+
 # Mengatur konfigurasi tampilan Streamlit
 def set_page_config():
         st.set_page_config(
-            page_title="Char Gantari",
-            page_icon=":mortar_board:",
+            page_title="Chat Gantari",
+            page_icon='LOGO EKSE1.png',
             layout="wide",
             initial_sidebar_state="expanded",
         )
@@ -273,15 +275,22 @@ if choice == 'Akses Keluhan':
 
         def __repr__(self):
             return str(self.__dict__)
+            
+    def get_auth():
+        conn = psycopg2.connect(
+            host="localhost",
+            database="auth_db",
+            user="Hilmy(Risbang)",
+            password="Risbang2323")
+        cur = conn.cursor()
+        cur.execute("SELECT username, password FROM DBAUTH")
+        rows = cur.fetchall()
+        auth = {}
+        for row in rows:
+            auth[row[0]] = row[1]
+        return auth
 
-    auth = {
-        'Hilmy': '22092003',
-        'KingBudiSatriaHalim': 'password2',
-        'FarhanRamadhanAbdullah': 'password3',
-        'JasmitaYasmin': 'password4',
-        'RifaMahiraDrinaputeri': 'password5'
-    }
-
+  
 
     # Fungsi untuk menampilkan halaman login
     def show_login_page():
@@ -291,6 +300,7 @@ if choice == 'Akses Keluhan':
         password = st.text_input('Kata Sandi', type='password')
 
         if st.button('Login'):
+            auth=get_auth()
             if email in auth and auth[email] == password:
                 # Set a flag to indicate that the user has logged in
                 session = st.session_state
@@ -524,14 +534,12 @@ if choice == 'Complaint Analytics':
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa di tiap bulannya
             ''')
-#      
-# 
+                # Disable zooming
         fig.update_layout(
             dragmode="pan",
             hovermode="x",
             autosize=True
         )
-
         st.plotly_chart(fig)
 
 
