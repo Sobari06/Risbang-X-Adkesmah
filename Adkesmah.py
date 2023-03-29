@@ -279,7 +279,7 @@ if choice == 'Akses Keluhan':
     def get_auth():
         conn = psycopg2.connect(
             host="localhost",
-            database="DBAUTH",
+            database="auth_db",
             user="Hilmy(Risbang)",
             password="Risbang2323")
         cur = conn.cursor()
