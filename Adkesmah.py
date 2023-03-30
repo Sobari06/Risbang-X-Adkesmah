@@ -117,6 +117,27 @@ if choice == 'Identitas Penerima Keluhan':
     st.title('Identitas Penerima Keluhan')
        # Tampilkan deskripsi staff
 
+    # col1, col2,col3,col4 = st.columns([2,2,2,2])
+    # with col1:
+    #  st.image("2.jpg", width=280)
+    #  st.write("Nomor Whatsapp: 085contoh23223")
+    #  st.write("email: contoh@gmail.com")
+
+    # with col2:
+    #    # Tampilkan informasi nilai mutu
+    #  st.image("7.jpg", width=280)
+    #  st.write("Nomor Whatsapp: 085contoh23223")
+    #  st.write("email: contoh@gmail.com")
+    # with col3:
+    #    # Tampilkan informasi nilai mutu
+    #  st.image("10.jpg", width=280)
+    #  st.write("Nomor Whatsapp: 085contoh23223")
+    #  st.write("email: contoh@gmail.com")
+    # with col4:
+    #    # Tampilkan informasi nilai mutu
+    #    st.image("12.jpg", width=280)
+    #    st.write("Nomor Whatsapp: 085contoh23223")
+    #    st.write("email: contoh@gmail.com")
 
     col1, col2 = st.columns([1,1])
     with col1:
@@ -435,7 +456,7 @@ if choice == 'Akses Keluhan':
                             st.write('### Data Keluhan Terbaru')
                             st.write('Nama Pelapor:', data['Nama'])
                             st.write('Kategori Keluhan:', data['Kategori Keluhan'])
-                            st.write('### Judul Keluhan: ', data['Judul Keluhan'])
+                            st.write('Judul Keluhan: ', data['Judul Keluhan'])
                             st.write('Isi Keluhan:', data['Deskripsi Keluhan'])
                             st.write('Waktu Pengiriman:', data['Waktu Pengiriman'])
                             st.write('Status Keluhan:', data['Status'])
@@ -617,25 +638,6 @@ if choice == 'Complaint Analytics':
             ''')
         st.plotly_chart(fig)
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
        
         st.markdown('-------------')
         # Konversi kolom Tanggal menjadi format tanggal
@@ -660,14 +662,17 @@ if choice == 'Complaint Analytics':
 
         # Hitung jumlah keluhan per hari dan buat grafik menggunakan Plotly Express
         daily_counts = filtered_data.groupby('Tanggal')['Status'].count().reset_index(name='Jumlah Keluhan')
+
         fig = px.line(daily_counts, x='Tanggal', y='Jumlah Keluhan', title='Jumlah Keluhan per Hari')
 
        
         fig2 = px.histogram(filtered_data, x='Kategori Keluhan', title='Kategori Keluhan')
 
         # Tampilkan grafik status keluhan menggunakan Plotly Express
-       
-        fig3 = px.pie(filtered_data, values=filtered_data.index, names='Status', title='Status Keluhan')
+            # Hitung jumlah keluhan per status dan buat grafik menggunakan Plotly Express
+        status_counts = filtered_data.groupby('Status')['Jumlah Keluhan'].sum().reset_index(name='Jumlah Keluhan')
+        fig3 = px.pie(status_counts, values='Jumlah Keluhan', names='Status', title='Jumlah Keluhan berdasarkan Status')
+        fig31 = px.histogram(filtered_data, x='Status', title='status')
 
         # Tampilkan grafik menggunakan Streamlit
         st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Hari')
@@ -695,18 +700,32 @@ if choice == 'Complaint Analytics':
         )
 
         st.plotly_chart(fig2)
-        st.title('Pie Chart Frekuensi Status Keluhan Mahasiswa')
+        st.title('Histogram Frekuensi Status Keluhan Mahasiswa')
         st.markdown('''
              Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
             ''')
          # Disable zooming
-        fig3.update_layout(
+        fig2.update_layout(
             dragmode="pan",
             hovermode="x",
             autosize=True
         )
 
-        st.plotly_chart(fig3)
+
+
+
+        st.plotly_chart(fig31)
+        st.title('Pie Chart Frekuensi Status Keluhan Mahasiswa')
+        st.markdown('''
+             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
+            ''')
+         # Disable zooming
+        fig31.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+
     
 
         # Preprocess data
