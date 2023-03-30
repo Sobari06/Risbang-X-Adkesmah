@@ -73,19 +73,17 @@ if choice == 'Halaman Utama':
 
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
-    # Load Lottie animation
-    with open("Halutama.json", "r") as f:
-        animation = json.load(f)
-    # Render the animation in Streamlit
-    st_lottie(animation, speed=1, width=400, height=400, key="anima")
-    col1, col2 = st.columns([1,1])
-    with col1:
-         st_lottie(animation, speed=1, width=400, height=400, key="animation")
-     
+    # # Load Lottie animation
+    # with open("Halutama.json", "r") as f:
+    #     animation = json.load(f)
+    # # Render the animation in Streamlit
+    # st_lottie(animation, speed=1, width=400, height=400, key="anima")
+    # col1, col2 = st.columns([1,1])
+    # with col1:
+    #     st_lottie(animation, speed=1, width=400, height=400, key="animation")
 
-    with col2:
-   
-      st_lottie(load_lottie_url(url), key="chuaks")
+    # with col2:
+    #   st_lottie(load_lottie_url(url), key="chuaks")
 
     st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
@@ -690,7 +688,7 @@ if choice == 'Complaint Analytics':
         # Tampilkan grafik status keluhan menggunakan Plotly Express
             # Hitung jumlah keluhan per status dan buat grafik menggunakan Plotly Express
         status_counts = filtered_data.groupby('Status')['Jumlah Keluhan'].sum().reset_index(name='Jumlah Keluhan')
-        fig3 = px.pie(status_counts, values='Jumlah Keluhan', names='Status', title='Jumlah Keluhan berdasarkan Status')
+        # fig3 = px.pie(status_counts, values='Jumlah Keluhan', names='Status', title='Jumlah Keluhan berdasarkan Status')
         fig31 = px.histogram(filtered_data, x='Status', title='status')
 
         # Tampilkan grafik menggunakan Streamlit
@@ -734,16 +732,7 @@ if choice == 'Complaint Analytics':
 
 
         st.plotly_chart(fig31)
-        st.title('Pie Chart Frekuensi Status Keluhan Mahasiswa')
-        st.markdown('''
-             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
-            ''')
-         # Disable zooming
-        fig31.update_layout(
-            dragmode="pan",
-            hovermode="x",
-            autosize=True
-        )
+    
 
     
 
@@ -765,26 +754,92 @@ if choice == 'Complaint Analytics':
 
 
         st.write("")  # Tambahkan spasi kosong
+        st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("")  # Tambahkan spasi kosong
-        with col2:
-            st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
+        
+        kepuasan = sheet1.get_all_records()
+        df = pd.DataFrame(kepuasan)
+# Membuat dataframe dari data kepuasan
+        df = pd.DataFrame(kepuasan)
+
+        # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
+        df['Tanggal'] = pd.to_datetime(df['Tanggal'])
+        df['Bulan'] = df['Tanggal'].dt.strftime('%B')
+
+            # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
+        avg_metrics = df.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
+
+        # Menghitung rata-rata kepuasan untuk setiap bulan
+        avg_metrics['rata_kepuasan'] = avg_metrics[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean(axis=1)/10
+
+        # Sort data frame berdasarkan bulan
+        avg_metrics = avg_metrics.sort_values('Bulan')
+
+        # Create line chart using plotly dan menampilkan rata-rata kepuasan untuk bulan tertentu
+        fig = px.line(avg_metrics, x='Bulan', y='rata_kepuasan')
+        st.plotly_chart(fig)
+
+
+
+        # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
+        df['Tanggal'] = pd.to_datetime(df['Tanggal'])
+        df['Bulan'] = df['Tanggal'].dt.strftime('%B')
+
+        # Menghitung rata-rata dari setiap kolom
+        metrics = ['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']
+        df[metrics] = df[metrics].div(10)  # Membagi semua nilai dengan 10
+        avg_metrics = df.groupby('Bulan')[metrics].mean().reset_index()
+
+        # Sort data frame berdasarkan bulan
+        avg_metrics = avg_metrics.sort_values('Bulan')
+
+        # Create line plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
+        fig = px.line(avg_metrics, x='Bulan', y=metrics)
+        fig.update_layout(title='Dinamika Rata-rata Kepuasan per Bulan',
+                        xaxis_title='Bulan',
+                        yaxis_title='Rata-rata Kepuasan')
+        st.plotly_chart(fig)
+
+
+        # df['Bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%B')
+
+        # # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
+        # avg_metrics = df.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
+
+        # # Sort data frame berdasarkan bulan
+        # avg_metrics = avg_metrics.sort_values('Bulan')
+
+        # # Create bar plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
+        # fig = px.bar(avg_metrics, x='Bulan', y=['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation'], barmode='group')
+        # st.plotly_chart(fig)
+
+        # # Create dropdown untuk sortir data berdasarkan bulan untuk setiap metric
+        # sort_options = ['Ascending', 'Descending']
+        # sort_by = st.selectbox('Sort by', avg_metrics.columns[1:], key='sort_by')
+
+        # if st.sidebar.checkbox('Show metrics'):
+        #     for metric in avg_metrics.columns[1:]:
+        #         sorted_avg_metrics = avg_metrics.sort_values(sort_by, ascending=sort_options[0] == 'Ascending')
+        #         metric_value = sorted_avg_metrics[metric].mean()
+        #         metric_delta = sorted_avg_metrics[metric].diff().mean()
+        #         st.metric(label=metric, value=f"{metric_value:.2f}", delta=f"{metric_delta:.2f}")
 
 
             
 
 
 
-    auth = {
-        'Hilmy': '22092003',
-        'KingBudiSatriaHalim': 'password2',
-        'FarhanRamadhanAbdullah': 'password3',
-        'JasmitaYasmin': 'password4',
-        'RifaMahiraDrinaputeri': 'password5'
-    }
+   
+    def get_auth_data():
+            # Ambil data auth dari Spreadsheet
+            auth_data = sheet2.get_all_records()
 
+            # Ubah format data auth menjadi dictionary
+            auth = {}
+            for row in auth_data:
+                auth[row['Username']] = row['Password']
+
+            return auth
 
     # Fungsi untuk menampilkan halaman login
     def show_login_page():
@@ -795,6 +850,7 @@ if choice == 'Complaint Analytics':
         password = st.text_input('Kata Sandi', type='password')
 
         if st.button('Login'):
+            auth=get_auth_data()
             if email in auth and auth[email] == password:
                 # Set a flag to indicate that the user has logged in
                 session = st.session_state
