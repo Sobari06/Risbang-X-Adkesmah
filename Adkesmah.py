@@ -628,6 +628,7 @@ if choice == 'Complaint Analytics':
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya .
             ''')
         # st.subheader('Jumlah Keluhan Tiap Bulan Berdasarkan Kategori')
+        
         st.plotly_chart(fig)
       
        
@@ -697,7 +698,7 @@ if choice == 'Complaint Analytics':
              Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan status Keluhan di tiap bulannya
             ''')
          # Disable zooming
-        fig2.update_layout(
+        fig31.update_layout(
             dragmode="pan",
             hovermode="x",
             autosize=True
