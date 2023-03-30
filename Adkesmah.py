@@ -482,7 +482,11 @@ if choice == 'Complaint Analytics':
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
     url = "https://assets9.lottiefiles.com/packages/lf20_5tl1xxnz.json"
     # Menampilkan animasi Lottie di tampilan utama Streamlit
-    st_lottie(load_lottie_url(url))
+#     st_lottie(load_lottie_url(url))
+        
+    with open("ComplaintAnal.json", "r") as f:
+        animation = json.load(f)
+    st_lottie(animation, speed=1, width=700, height=700, key="anima")
     
     def Complaint_Graph_For_Viewers():
         # Load data
