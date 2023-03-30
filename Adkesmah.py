@@ -20,7 +20,7 @@ def set_page_config():
         st.set_page_config(
             page_title="Chat Gantari",
             page_icon='LOGO EKSE1.png',
-          
+            layout="wide",
             initial_sidebar_state="expanded",
         )
 
