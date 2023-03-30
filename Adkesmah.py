@@ -73,7 +73,7 @@ if choice == 'Halaman Utama':
 
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
-    st_lottie(animation, speed=1, width=850, height=850, key="anima")
+    st_lottie(animation, speed=1, width=700, height=700, key="anima")
 
 
     st.title("Chat Gantari")
@@ -163,7 +163,7 @@ if choice == 'Survei Kepuasan':
     # st_lottie(load_lottie_url(url))
     with open("SurveiPuas.json", "r") as f:
                 animation = json.load(f)
-    st_lottie(animation, speed=1, width=850, height=850, key="animasi")
+    st_lottie(animation, speed=1, width=700, height=700, key="animasi")
     def add_survei(name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback):
         data = [name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback]
         sheet1.insert_row(data, index=2)
@@ -249,7 +249,7 @@ if choice == 'Frequently Asked Questions':
 
     with open("FAQ.json", "r") as f:
             animation = json.load(f)
-    st_lottie(animation, speed=1, width=850, height=850, key="animas")
+    st_lottie(animation, speed=1, width=700, height=700, key="animas")
     st.title('Frequently Asked Questions')
     # st.subheader('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
     st.subheader('1. Berapa lama waktu yang diperlukan untuk menanggapi keluhan?')
