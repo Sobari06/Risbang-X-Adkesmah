@@ -76,10 +76,16 @@ if choice == 'Halaman Utama':
     # Load Lottie animation
     with open("Halutama.json", "r") as f:
         animation = json.load(f)
-
     # Render the animation in Streamlit
-    st_lottie(animation, speed=1, width=400, height=400, key="animation")
-    
+    st_lottie(animation, speed=1, width=400, height=400, key="anima")
+    col1, col2 = st.columns([1,1])
+    with col1:
+         st_lottie(animation, speed=1, width=400, height=400, key="animation")
+     
+
+    with col2:
+   
+      st_lottie(load_lottie_url(url), key="chuaks")
 
     st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
