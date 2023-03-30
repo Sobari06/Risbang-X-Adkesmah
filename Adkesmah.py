@@ -139,7 +139,7 @@ if choice == 'Identitas Penerima Keluhan':
        st.write("Nomor Whatsapp: 085contoh23223")
        st.write("email: contoh@gmail.com")
 
-    col1, col2 = st.columns([2,2])
+    col1, col2 = st.columns([1,1])
     with col1:
      st.image("2.jpg", width=280)
      st.write("Nomor Whatsapp: 085contoh23223")
@@ -151,7 +151,7 @@ if choice == 'Identitas Penerima Keluhan':
      st.write("Nomor Whatsapp: 085contoh23223")
      st.write("email: contoh@gmail.com")
 
-    col1, col2 = st.columns([2,2])
+    col1, col2 = st.columns([1,1])
     with col1:
      st.image("10.jpg", width=280)
      st.write("Nomor Whatsapp: 085contoh23223")
