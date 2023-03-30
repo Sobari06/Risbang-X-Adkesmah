@@ -71,19 +71,19 @@ if choice == 'Halaman Utama':
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
     url = "https://assets8.lottiefiles.com/packages/lf20_km5er2un.json"
 
-    # Menampilkan animasi Lottie di tampilan utama Streamlit
-    st_lottie(load_lottie_url(url))
+#     # Menampilkan animasi Lottie di tampilan utama Streamlit
+#     st_lottie(load_lottie_url(url))
     # Load Lottie animation
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
     # Render the animation in Streamlit
     st_lottie(animation, speed=1, width=777, height=777, key="anima")
-    col1, col2 = st.columns([1,1])
-    with col1:
-        st_lottie(animation, speed=1, width=400, height=400, key="animation")
+#     col1, col2 = st.columns([1,1])
+#     with col1:
+#         st_lottie(animation, speed=1, width=400, height=400, key="animation")
 
-    with col2:
-      st_lottie(load_lottie_url(url), key="chuaks")
+#     with col2:
+#       st_lottie(load_lottie_url(url), key="chuaks")
 
     st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
