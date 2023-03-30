@@ -73,7 +73,7 @@ if choice == 'Halaman Utama':
 
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
-    st_lottie(animation, speed=1, width=600, height=600, key="anima")
+    st_lottie(animation, speed=1, width=850, height=850, key="anima")
 
 
     st.title("Chat Gantari")
