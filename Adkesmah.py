@@ -73,17 +73,17 @@ if choice == 'Halaman Utama':
 
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
-    # # Load Lottie animation
-    # with open("Halutama.json", "r") as f:
-    #     animation = json.load(f)
-    # # Render the animation in Streamlit
-    # st_lottie(animation, speed=1, width=400, height=400, key="anima")
-    # col1, col2 = st.columns([1,1])
-    # with col1:
-    #     st_lottie(animation, speed=1, width=400, height=400, key="animation")
+    # Load Lottie animation
+    with open("Halutama2.json", "r") as f:
+        animation = json.load(f)
+    # Render the animation in Streamlit
+    st_lottie(animation, speed=1, width=1000, height=1000, key="anima")
+    col1, col2 = st.columns([1,1])
+    with col1:
+        st_lottie(animation, speed=1, width=400, height=400, key="animation")
 
-    # with col2:
-    #   st_lottie(load_lottie_url(url), key="chuaks")
+    with col2:
+      st_lottie(load_lottie_url(url), key="chuaks")
 
     st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
@@ -742,6 +742,9 @@ if choice == 'Complaint Analytics':
 
 
     def Complaint_Graph():
+        st.title('Dashboard Program Pengaduan Keluhan KM PKU IPB')
+        st.markdown('-------------')
+        st.subheader('Metrik Utama')
         keluhan = sheet.get_all_records()
         data1 = pd.DataFrame(keluhan)
         data1['Durasi Penyelesaian (jam)'] = pd.to_numeric(data1['Durasi Penyelesaian (jam)'], errors='coerce')
@@ -754,19 +757,17 @@ if choice == 'Complaint Analytics':
 
 
         st.write("")  # Tambahkan spasi kosong
-        st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
+       
 
         
         kepuasan = sheet1.get_all_records()
+        # Membuat dataframe dari data kepuasan
         df = pd.DataFrame(kepuasan)
-# Membuat dataframe dari data kepuasan
-        df = pd.DataFrame(kepuasan)
-
         # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
         df['Tanggal'] = pd.to_datetime(df['Tanggal'])
         df['Bulan'] = df['Tanggal'].dt.strftime('%B')
 
-            # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
+        # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
         avg_metrics = df.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
 
         # Menghitung rata-rata kepuasan untuk setiap bulan
@@ -775,10 +776,35 @@ if choice == 'Complaint Analytics':
         # Sort data frame berdasarkan bulan
         avg_metrics = avg_metrics.sort_values('Bulan')
 
-        # Create line chart using plotly dan menampilkan rata-rata kepuasan untuk bulan tertentu
+        # Menampilkan rata-rata kepuasan untuk bulan terakhir dan delta dengan bulan sebelumnya
+        last_month = avg_metrics['rata_kepuasan'].iloc[-1]
+        prev_month = avg_metrics['rata_kepuasan'].iloc[-2]
+        delta = last_month - prev_month
+
+        # Tampilkan metrik dalam kolom
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
+        with col2:
+            st.metric(label="Rata-rata Kepuasan", value=round(last_month, 2), delta=round(delta, 2))
+
+        # Tampilkan grafik menggunakan Streamlit
+        st.title('Line Chart (Time Series) Rata-Rata Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan Rata-Rata Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya
+            ''')
         fig = px.line(avg_metrics, x='Bulan', y='rata_kepuasan')
         st.plotly_chart(fig)
+     
+      
+         # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
 
+      
 
 
         # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
@@ -792,14 +818,31 @@ if choice == 'Complaint Analytics':
 
         # Sort data frame berdasarkan bulan
         avg_metrics = avg_metrics.sort_values('Bulan')
+        st.title('Line Chart (Time Series) Rata-Rata tiap indikator dari Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya')
+        st.markdown('''
+            Grafik interaktif untuk menampilkan Rata-Rata tiap indikator dari Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya
+            ''')
 
         # Create line plot using plotly dan menampilkan rata-rata nilai untuk bulan tertentu
         fig = px.line(avg_metrics, x='Bulan', y=metrics)
         fig.update_layout(title='Dinamika Rata-rata Kepuasan per Bulan',
                         xaxis_title='Bulan',
                         yaxis_title='Rata-rata Kepuasan')
+        # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
         st.plotly_chart(fig)
-
+        # Disable zooming
+        fig.update_layout(
+            dragmode="pan",
+            hovermode="x",
+            autosize=True
+        )
+        st.markdown('-------------')
+        st.subheader('Metrik Sekunder')
 
         # df['Bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%B')
 
@@ -857,9 +900,6 @@ if choice == 'Complaint Analytics':
                 session.logged_in = True
                 st.session_state.email = email # tambahkan email ke dalam session state
                 st.success('Login berhasil')
-                
-
-
             else:
                 st.error('Email atau kata sandi Anda salah. Silakan coba lagi.')
         # Fungsi utama
