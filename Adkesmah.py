@@ -249,7 +249,7 @@ if choice == 'Frequently Asked Questions':
 
     with open("FAQ.json", "r") as f:
             animation = json.load(f)
-    st_lottie(animation, speed=1, width=700, height=700, key="animas")
+    st_lottie(animation, speed=1, width=650, height=650, key="animas")
     st.title('Frequently Asked Questions')
     # st.subheader('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
     st.subheader('1. Berapa lama waktu yang diperlukan untuk menanggapi keluhan?')
