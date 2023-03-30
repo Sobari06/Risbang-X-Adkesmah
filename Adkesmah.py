@@ -82,7 +82,7 @@ if choice == 'Halaman Utama':
                 
     with col2:
             # Tampilkan informasi nilai mutu
-                st.image('RISBANG X ADKESMAH.png', width=400)
+                st.image('RISBANG X ADKESMAH.png', width=300)
 
     # Get input from user
     nama = st.text_input('Nama')
