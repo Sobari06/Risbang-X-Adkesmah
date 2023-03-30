@@ -74,10 +74,15 @@ if choice == 'Halaman Utama':
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
     st_lottie(animation, speed=1, width=700, height=700, key="anima")
-
-
-    st.title("Chat Gantari")
-    st.subheader('Input Keluhan Mahasiswa')
+    col1, col2= st.columns([2,1])
+    with col1:
+                st.title("Chat Gantari")
+                st.subheader("Ormawa Eksekutif PKU IPB Kabinet Gantari Arti")   
+                st.subheader('Input Keluhan Mahasiswa')
+                
+    with col2:
+            # Tampilkan informasi nilai mutu
+                st.image('RISBANG X ADKESMAH.png', width=400))
 
     # Get input from user
     nama = st.text_input('Nama')
