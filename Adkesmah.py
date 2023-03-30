@@ -77,7 +77,7 @@ if choice == 'Halaman Utama':
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
     # Render the animation in Streamlit
-    st_lottie(animation, speed=1, width=1000, height=1000, key="anima")
+    st_lottie(animation, speed=1, width=777, height=777, key="anima")
     col1, col2 = st.columns([1,1])
     with col1:
         st_lottie(animation, speed=1, width=400, height=400, key="animation")
