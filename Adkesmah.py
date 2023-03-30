@@ -34,6 +34,7 @@ client = gspread.authorize(creds)
 # Open the Google Sheets file
 sheet = client.open('Keluhan Mahasiswa').sheet1
 sheet1 = client.open('KepuasanUser').sheet1
+sheet2 = client.open('Authentifikasi').sheet1
 #data = sheet.get_all_records()
 # Define the sidebar menu options
 menu = ['Halaman Utama', 'Identitas Penerima Keluhan', 'Survei Kepuasan', 'Frequently Asked Questions', 'Akses Keluhan', 'Complaint Analytics']
@@ -114,9 +115,30 @@ if choice == 'Identitas Penerima Keluhan':
     st_lottie(load_lottie_url(url))
 
     st.title('Identitas Penerima Keluhan')
+       # Tampilkan deskripsi staff
 
-    st.write('1. Nama Penerima Keluhan')
-    st.write('2. NIM Penerima')
+    col1, col2,col3,col4 = st.columns([2,2,2,2])
+    with col1:
+     st.image("2.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+
+    with col2:
+       # Tampilkan informasi nilai mutu
+     st.image("7.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+    with col3:
+       # Tampilkan informasi nilai mutu
+     st.image("10.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+    with col4:
+       # Tampilkan informasi nilai mutu
+       st.image("12.jpg", width=280)
+       st.write("Nomor Whatsapp: 085contoh23223")
+       st.write("email: contoh@gmail.com")
+
 
 # Survei Kepuasan
 if choice == 'Survei Kepuasan':
@@ -210,14 +232,12 @@ if choice == 'Frequently Asked Questions':
     st_lottie(load_lottie_url(url))
 
     st.title('Frequently Asked Questions')
-    st.write('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
-    st.write('1. Bagaimana cara melihat status keluhan saya?')
-    st.write('Anda dapat melihat status keluhan Anda di menu "Akses Keluhan" setelah melakukan autentifikasi.')
-    st.write('2. Berapa lama waktu yang diperlukan untuk menanggapi keluhan?')
+    st.subheader('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
+    st.subheader('1. Berapa lama waktu yang diperlukan untuk menanggapi keluhan?')
     st.write('Kami berusaha menanggapi setiap keluhan dalam waktu 24 jam.')
-    st.write('3. Apa yang harus saya lakukan jika keluhan saya tidak direspon?')
+    st.subheader('2. Apa yang harus saya lakukan jika keluhan saya tidak direspon?')
     st.write('Silakan hubungi kami melalui email atau nomor telepon yang tertera di situs kami.')
-    st.write('4. Apakah saya dapat memberikan feedback tentang pelayanan yang diberikan?')
+    st.subheader('3. Apakah saya dapat memberikan feedback tentang pelayanan yang diberikan?')
     st.write('Tentu saja! Anda dapat memberikan feedback melalui menu "Survei Kepuasan" di situs kami.')
 
 if choice == 'Akses Keluhan':
@@ -276,20 +296,30 @@ if choice == 'Akses Keluhan':
         def __repr__(self):
             return str(self.__dict__)
             
-    def get_auth():
-        conn = psycopg2.connect(
-            host="localhost",
-            database="auth_db",
-            user="Hilmy(Risbang)",
-            password="Risbang2323")
-        cur = conn.cursor()
-        cur.execute("SELECT username, password FROM DBAUTH")
-        rows = cur.fetchall()
-        auth = {}
-        for row in rows:
-            auth[row[0]] = row[1]
-        return auth
+    # def get_auth():
+    #     conn = psycopg2.connect(
+    #         host="localhost",
+    #         database="auth_db",
+    #         user="Hilmy(Risbang)",
+    #         password="Risbang2323")
+    #     cur = conn.cursor()
+    #     cur.execute("SELECT username, password FROM DBAUTH")
+    #     rows = cur.fetchall()
+    #     auth = {}
+    #     for row in rows:
+    #         auth[row[0]] = row[1]
+    #     return auth
+    
+    def get_auth_data():
+        # Ambil data auth dari Spreadsheet
+        auth_data = sheet2.get_all_records()
 
+        # Ubah format data auth menjadi dictionary
+        auth = {}
+        for row in auth_data:
+            auth[row['Username']] = row['Password']
+
+        return auth
   
 
     # Fungsi untuk menampilkan halaman login
@@ -300,7 +330,7 @@ if choice == 'Akses Keluhan':
         password = st.text_input('Kata Sandi', type='password')
 
         if st.button('Login'):
-            auth=get_auth()
+            auth=get_auth_data()
             if email in auth and auth[email] == password:
                 # Set a flag to indicate that the user has logged in
                 session = st.session_state
