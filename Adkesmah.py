@@ -7,7 +7,11 @@ from streamlit_lottie import st_lottie
 import requests 
 import numpy as np
 import plotly.express as px
+import json
 import psycopg2
+# from PIL import Image, ImageDraw, ImageFont
+# import imageio
+# from gif import GIF
 
 
 
@@ -55,6 +59,8 @@ def update_status(row, status):
 
 
 if choice == 'Halaman Utama':
+
+
      #Mendefinisikan fungsi untuk menampilkan animasi Lottie
     def load_lottie_url(url: str):
         r = requests.get(url)
@@ -67,6 +73,13 @@ if choice == 'Halaman Utama':
 
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
+    # Load Lottie animation
+    with open("Halutama.json", "r") as f:
+        animation = json.load(f)
+
+    # Render the animation in Streamlit
+    st_lottie(animation, speed=1, width=400, height=400, key="animation")
+    
 
     st.title("Misal: Chat Gantari")
     st.title('Input Keluhan Mahasiswa')
