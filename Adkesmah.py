@@ -573,7 +573,7 @@ if choice == 'Complaint Analytics':
         # Tampilkan grafik menggunakan Plotly Express
        
          # Tampilkan line chart
-        st.subheader('Jumlah Keluhan Tiap Bulan')
+        # st.subheader('Jumlah Keluhan Tiap Bulan')
         fig = px.line(keluhan_per_bulan, x="Tanggal", y="Jumlah Keluhan")
         st.title('Line Chart (Time Series) Frekuensi Keluhan Mahasiswa Tiap Bulan')
         st.markdown('''
@@ -621,12 +621,13 @@ if choice == 'Complaint Analytics':
         )
 
          # Tampilkan stacked chart
-        st.subheader('Jumlah Keluhan Tiap Bulan Berdasarkan Kategori')
+       
    
         st.title('Stacked Chart (Time Series) Frekuensi Kategori Keluhan Mahasiswa Tiap Bulan')
         st.markdown('''
             Grafik interaktif untuk menampilkan banyaknya Keluhan Mahasiswa berdasarkan Kategori Keluhan di tiap bulannya .
             ''')
+        # st.subheader('Jumlah Keluhan Tiap Bulan Berdasarkan Kategori')
         st.plotly_chart(fig)
       
        
@@ -661,7 +662,7 @@ if choice == 'Complaint Analytics':
 
         # Tampilkan grafik status keluhan menggunakan Plotly Express
             # Hitung jumlah keluhan per status dan buat grafik menggunakan Plotly Express
-        status_counts = filtered_data.groupby('Status')['Jumlah Keluhan'].sum().reset_index(name='Jumlah Keluhan')
+        #status_counts = filtered_data.groupby('Status')['Jumlah Keluhan'].sum().reset_index(name='Jumlah Keluhan')
         # fig3 = px.pie(status_counts, values='Jumlah Keluhan', names='Status', title='Jumlah Keluhan berdasarkan Status')
         fig31 = px.histogram(filtered_data, x='Status', title='status')
 
@@ -716,7 +717,7 @@ if choice == 'Complaint Analytics':
     def Complaint_Graph():
         st.title('Dashboard Program Pengaduan Keluhan KM PKU IPB')
         st.markdown('-------------')
-        st.subheader('Metrik Utama')
+        st.subheader('Metrik Primer')
         keluhan = sheet.get_all_records()
         data1 = pd.DataFrame(keluhan)
         data1['Durasi Penyelesaian (jam)'] = pd.to_numeric(data1['Durasi Penyelesaian (jam)'], errors='coerce')
