@@ -121,26 +121,26 @@ if choice == 'Identitas Penerima Keluhan':
     col1, col2 = st.columns([1,1])
     with col1:
      st.image("2.jpg", width=280)
-     st.write("Nomor Whatsapp: 085contoh23223")
-     st.write("email: contoh@gmail.com")
+     st.write("Nomor Whatsapp: 085939633862")
+     st.write("email: Kingbudi@apps.ipb.ac.id")
 
     with col2:
        # Tampilkan informasi nilai mutu
      st.image("7.jpg", width=280)
-     st.write("Nomor Whatsapp: 085contoh23223")
-     st.write("email: contoh@gmail.com")
+     st.write("Nomor Whatsapp: 081318903581")
+     st.write("email: rifaamahira@apps.ipb.ac.id")
 
     col1, col2 = st.columns([1,1])
     with col1:
      st.image("10.jpg", width=280)
-     st.write("Nomor Whatsapp: 085contoh23223")
-     st.write("email: contoh@gmail.com")
+     st.write("Nomor Whatsapp: 082125756403")
+     st.write("email: farhanar1709ramadhan@apps.ipb.ac.id")
 
     with col2:
        # Tampilkan informasi nilai mutu
      st.image("12.jpg", width=280)
-     st.write("Nomor Whatsapp: 085contoh23223")
-     st.write("email: contoh@gmail.com")
+     st.write("Nomor Whatsapp: 081281802304")
+     st.write("email: jsmitayasmin@apps.ipb.ac.id")
 
 
 # Survei Kepuasan
