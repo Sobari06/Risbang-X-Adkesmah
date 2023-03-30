@@ -71,22 +71,13 @@ if choice == 'Halaman Utama':
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
     url = "https://assets8.lottiefiles.com/packages/lf20_km5er2un.json"
 
-#     # Menampilkan animasi Lottie di tampilan utama Streamlit
-#     st_lottie(load_lottie_url(url))
-    # Load Lottie animation
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
-    # Render the animation in Streamlit
-    st_lottie(animation, speed=1, width=777, height=777, key="anima")
-#     col1, col2 = st.columns([1,1])
-#     with col1:
-#         st_lottie(animation, speed=1, width=400, height=400, key="animation")
+    st_lottie(animation, speed=1, width=850, height=850, key="anima")
 
-#     with col2:
-#       st_lottie(load_lottie_url(url), key="chuaks")
 
-    st.title("Misal: Chat Gantari")
-    st.title('Input Keluhan Mahasiswa')
+    st.title("Chat Gantari")
+    st.subheader('Input Keluhan Mahasiswa')
 
     # Get input from user
     nama = st.text_input('Nama')
@@ -134,28 +125,7 @@ if choice == 'Identitas Penerima Keluhan':
     st.title('Identitas Penerima Keluhan')
        # Tampilkan deskripsi staff
 
-    # col1, col2,col3,col4 = st.columns([2,2,2,2])
-    # with col1:
-    #  st.image("2.jpg", width=280)
-    #  st.write("Nomor Whatsapp: 085contoh23223")
-    #  st.write("email: contoh@gmail.com")
-
-    # with col2:
-    #    # Tampilkan informasi nilai mutu
-    #  st.image("7.jpg", width=280)
-    #  st.write("Nomor Whatsapp: 085contoh23223")
-    #  st.write("email: contoh@gmail.com")
-    # with col3:
-    #    # Tampilkan informasi nilai mutu
-    #  st.image("10.jpg", width=280)
-    #  st.write("Nomor Whatsapp: 085contoh23223")
-    #  st.write("email: contoh@gmail.com")
-    # with col4:
-    #    # Tampilkan informasi nilai mutu
-    #    st.image("12.jpg", width=280)
-    #    st.write("Nomor Whatsapp: 085contoh23223")
-    #    st.write("email: contoh@gmail.com")
-
+   
     col1, col2 = st.columns([1,1])
     with col1:
      st.image("2.jpg", width=280)
@@ -184,19 +154,23 @@ if choice == 'Identitas Penerima Keluhan':
 # Survei Kepuasan
 if choice == 'Survei Kepuasan':
         #Mendefinisikan fungsi untuk menampilkan animasi Lottie
-    def load_lottie_url(url: str):
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
+    # def load_lottie_url(url: str):
+    #     r = requests.get(url)
+    #     if r.status_code != 200:
+    #         return None
+    #     return r.json()
+    #  # Menampilkan animasi Lottie di tampilan utama Streamlit
+    # st_lottie(load_lottie_url(url))
+    with open("SurveiPuas.json", "r") as f:
+                animation = json.load(f)
+    st_lottie(animation, speed=1, width=850, height=850, key="animasi")
     def add_survei(name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback):
         data = [name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback]
         sheet1.insert_row(data, index=2)
     
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
     url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
-    # Menampilkan animasi Lottie di tampilan utama Streamlit
-    st_lottie(load_lottie_url(url))
+   
     st.title('Survei Kepuasan')
     st.write('Silahkan mengisi survei kepuasan berikut ini:')
     name = st.text_input('Nama:')
@@ -261,19 +235,23 @@ if choice == 'Survei Kepuasan':
 
 if choice == 'Frequently Asked Questions':
     #Mendefinisikan fungsi untuk menampilkan animasi Lottie
-    def load_lottie_url(url: str):
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
+    # def load_lottie_url(url: str):
+    #     r = requests.get(url)
+    #     if r.status_code != 200:
+    #         return None
+    #     return r.json()
 
-    # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    url = "https://assets3.lottiefiles.com/packages/lf20_D7l6QPTtOL.json"
-    # Menampilkan animasi Lottie di tampilan utama Streamlit
-    st_lottie(load_lottie_url(url))
+    # # Mendefinisikan URL animasi Lottie yang akan ditampilkan
+    # url = "https://assets3.lottiefiles.com/packages/lf20_D7l6QPTtOL.json"
+    # # Menampilkan animasi Lottie di tampilan utama Streamlit
+    # st_lottie(load_lottie_url(url))
 
+
+    with open("FAQ.json", "r") as f:
+            animation = json.load(f)
+    st_lottie(animation, speed=1, width=850, height=850, key="animas")
     st.title('Frequently Asked Questions')
-    st.subheader('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
+    # st.subheader('Berikut adalah beberapa pertanyaan dan jawaban yang sering ditanyakan:')
     st.subheader('1. Berapa lama waktu yang diperlukan untuk menanggapi keluhan?')
     st.write('Kami berusaha menanggapi setiap keluhan dalam waktu 24 jam.')
     st.subheader('2. Apa yang harus saya lakukan jika keluhan saya tidak direspon?')
@@ -337,20 +315,7 @@ if choice == 'Akses Keluhan':
         def __repr__(self):
             return str(self.__dict__)
             
-    # def get_auth():
-    #     conn = psycopg2.connect(
-    #         host="localhost",
-    #         database="auth_db",
-    #         user="Hilmy(Risbang)",
-    #         password="Risbang2323")
-    #     cur = conn.cursor()
-    #     cur.execute("SELECT username, password FROM DBAUTH")
-    #     rows = cur.fetchall()
-    #     auth = {}
-    #     for row in rows:
-    #         auth[row[0]] = row[1]
-    #     return auth
-    
+
     def get_auth_data():
         # Ambil data auth dari Spreadsheet
         auth_data = sheet2.get_all_records()
@@ -729,8 +694,6 @@ if choice == 'Complaint Analytics':
         )
 
 
-
-
         st.plotly_chart(fig31)
     
 
@@ -755,10 +718,6 @@ if choice == 'Complaint Analytics':
         # Calculate average resolution time
         avg_resolution_time =(data2['Durasi Penyelesaian (jam)'].mean())
 
-
-        st.write("")  # Tambahkan spasi kosong
-       
-
         
         kepuasan = sheet1.get_all_records()
         # Membuat dataframe dari data kepuasan
@@ -766,12 +725,14 @@ if choice == 'Complaint Analytics':
         # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
         df['Tanggal'] = pd.to_datetime(df['Tanggal'])
         df['Bulan'] = df['Tanggal'].dt.strftime('%B')
-
+        # Mengubah kolom 'Bulan' menjadi categorical dengan urutan yang diinginkan
+        bulan_order = ['March', 'April']
+        df['Bulan'] = pd.Categorical(df['Bulan'], categories=bulan_order, ordered=True)
         # Mengelompokkan nilai berdasarkan bulan dan menghitung rata-rata dari setiap kolom
         avg_metrics = df.groupby('Bulan')[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean().reset_index()
 
         # Menghitung rata-rata kepuasan untuk setiap bulan
-        avg_metrics['rata_kepuasan'] = avg_metrics[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean(axis=1)/10
+        avg_metrics['rata_kepuasan'] = avg_metrics[['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']].mean(axis=1)
 
         # Sort data frame berdasarkan bulan
         avg_metrics = avg_metrics.sort_values('Bulan')
@@ -788,21 +749,52 @@ if choice == 'Complaint Analytics':
         with col2:
             st.metric(label="Rata-rata Kepuasan", value=round(last_month, 2), delta=round(delta, 2))
 
+        st.markdown('-------------')
+        st.subheader('Metrik Sekunder')
+
+                # Menampilkan semua metrik beserta trendnya dalam kolom
+        col1, col2, col3, col4= st.columns(4)
+        with col1:
+            st.metric("Average Penanganan Keluhan", f"{avg_metrics['handling'].iloc[-1]:.2f}", delta=f"{avg_metrics['handling'].diff().iloc[-1]:.2f}")
+        with col2:
+            st.metric("Average Kecepatan Respon", f"{avg_metrics['response_time'].iloc[-1]:.2f}", delta=f"{avg_metrics['response_time'].diff().iloc[-1]:.2f}")
+        with col3:
+            st.metric("Average Kecepatan Resolusi", f"{avg_metrics['resolution'].iloc[-1]:.2f}", delta=f"{avg_metrics['resolution'].diff().iloc[-1]:.2f}")
+        with col4:
+            st.metric("Average Keramahtamahan", f"{avg_metrics['friendliness'].iloc[-1]:.2f}", delta=f"{avg_metrics['friendliness'].diff().iloc[-1]:.2f}")
+      
+            
+
+        st.markdown('-------------')
+        col1, col2, col3, col4= st.columns(4)
+        with col1:
+            st.metric("Average Keefektifan Solusi", f"{avg_metrics['effectiveness'].iloc[-1]:.2f}", delta=f"{avg_metrics['effectiveness'].diff().iloc[-1]:.2f}")
+        with col2:
+            st.metric("Average Komunikasi", f"{avg_metrics['communication'].iloc[-1]:.2f}", delta=f"{avg_metrics['communication'].diff().iloc[-1]:.2f}")
+        with col3:
+            st.metric("Average Rekomendasi", f"{avg_metrics['recommendation'].iloc[-1]:.2f}", delta=f"{avg_metrics['recommendation'].diff().iloc[-1]:.2f}")
+        with col4:
+            st.metric("Average Apresiasi", f"{avg_metrics['appreciation'].iloc[-1]:.2f}", delta=f"{avg_metrics['appreciation'].diff().iloc[-1]:.2f}")
+  
+            
+
         # Tampilkan grafik menggunakan Streamlit
         st.title('Line Chart (Time Series) Rata-Rata Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya')
         st.markdown('''
             Grafik interaktif untuk menampilkan Rata-Rata Kepuasan KM PKU terhadap Program Pengaduan Tiap bulannya
             ''')
         fig = px.line(avg_metrics, x='Bulan', y='rata_kepuasan')
-        st.plotly_chart(fig)
-     
-      
-         # Disable zooming
+        fig.update_xaxes(type='category')  # set type x-axis to categorical
+          # Disable zooming
         fig.update_layout(
             dragmode="pan",
             hovermode="x",
             autosize=True
         )
+        st.plotly_chart(fig)
+     
+      
+       
 
       
 
@@ -810,6 +802,11 @@ if choice == 'Complaint Analytics':
         # Mengubah kolom Tanggal menjadi format datetime dan menambahkan kolom Bulan
         df['Tanggal'] = pd.to_datetime(df['Tanggal'])
         df['Bulan'] = df['Tanggal'].dt.strftime('%B')
+
+        bulan_order = ['March', 'April']
+        df['Bulan'] = pd.Categorical(df['Bulan'], categories=bulan_order, ordered=True)
+
+        
 
         # Menghitung rata-rata dari setiap kolom
         metrics = ['satisfaction', 'response_time', 'resolution', 'friendliness', 'handling', 'effectiveness', 'communication', 'appreciation', 'recommendation']
@@ -828,6 +825,7 @@ if choice == 'Complaint Analytics':
         fig.update_layout(title='Dinamika Rata-rata Kepuasan per Bulan',
                         xaxis_title='Bulan',
                         yaxis_title='Rata-rata Kepuasan')
+        fig.update_xaxes(type='category')  # set type x-axis to categorical
         # Disable zooming
         fig.update_layout(
             dragmode="pan",
@@ -841,8 +839,7 @@ if choice == 'Complaint Analytics':
             hovermode="x",
             autosize=True
         )
-        st.markdown('-------------')
-        st.subheader('Metrik Sekunder')
+      
 
         # df['Bulan'] = pd.to_datetime(df['Tanggal']).dt.strftime('%B')
 
