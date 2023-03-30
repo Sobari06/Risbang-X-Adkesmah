@@ -139,6 +139,30 @@ if choice == 'Identitas Penerima Keluhan':
        st.write("Nomor Whatsapp: 085contoh23223")
        st.write("email: contoh@gmail.com")
 
+    col1, col2 = st.columns([2,2])
+    with col1:
+     st.image("2.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+
+    with col2:
+       # Tampilkan informasi nilai mutu
+     st.image("7.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+
+    col1, col2 = st.columns([2,2])
+    with col1:
+     st.image("10.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+
+    with col2:
+       # Tampilkan informasi nilai mutu
+     st.image("12.jpg", width=280)
+     st.write("Nomor Whatsapp: 085contoh23223")
+     st.write("email: contoh@gmail.com")
+
 
 # Survei Kepuasan
 if choice == 'Survei Kepuasan':
