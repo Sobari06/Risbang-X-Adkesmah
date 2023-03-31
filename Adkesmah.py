@@ -74,15 +74,19 @@ if choice == 'Halaman Utama':
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
     st_lottie(animation, speed=1, width=700, height=700, key="anima")
-    col1, col2= st.columns([2,1])
+    col1, col2= st.columns([1,1])
     with col1:
                 st.title("Chat Gantari")
-                st.subheader("Ormawa Eksekutif PKU IPB Kabinet Gantari Arti")   
-                st.subheader('Input Keluhan Mahasiswa')
+                st.subheader("Ormawa Eksekutif PKU IPB Kabinet Gantari Arti")
+                st.write("Membuat perubahan yang lebih baik dimulai dari menyuarakan masalah. Dengan Chat Gantari, Anda memiliki kesempatan untuk mengutarakan segala masalah dan keluhan yang Anda alami di Semasa PKU. Kami menjamin privasi dan keamanan informasi yang Anda berikan, serta memberikan solusi yang tepat dan efektif untuk setiap masalah yang dihadapi.")
+               
                 
     with col2:
             # Tampilkan informasi nilai mutu
                 st.image('RISBANG X ADKESMAH.png', width=300)
+
+    st.markdown('-------------')   
+    st.subheader('Input Keluhan Mahasiswa')
 
     # Get input from user
     nama = st.text_input('Nama')
@@ -127,8 +131,11 @@ if choice == 'Identitas Penerima Keluhan':
     # Menampilkan animasi Lottie di tampilan utama Streamlit
     st_lottie(load_lottie_url(url))
 
-    st.title('Identitas Penerima Keluhan')
-       # Tampilkan deskripsi staff
+    st.title('Advocare Introduction')
+
+    st.write("Advocare adalah penerima keluhan yang siap mendengar dan menyelesaikan setiap masalah yang Anda hadapi. Dengan fokus pada kepuasan dan kesejahteraan Anda, Advocare menawarkan layanan yang responsif dan profesional untuk membantu menyelesaikan masalah Anda dengan cepat dan efektif. Advocare terlatih dalam menangani setiap jenis keluhan, dan kami berkomitmen untuk memberikan solusi yang tepat dan memuaskan setiap kali Anda menghubungi Advocare. Dengan Advocare, Anda dapat merasa tenang dan terjamin bahwa masalah Anda akan ditangani dengan penuh perhatian dan keahlian yang sesuai.")
+    # Tampilkan deskripsi staff
+    st.markdown('-------------')   
 
    
     col1, col2 = st.columns([1,1])
@@ -142,6 +149,8 @@ if choice == 'Identitas Penerima Keluhan':
      st.image("7.jpg", width=280)
      st.write("Nomor Whatsapp: 081318903581")
      st.write("email: rifaamahira@apps.ipb.ac.id")
+
+    st.markdown('-------------')   
 
     col1, col2 = st.columns([1,1])
     with col1:
@@ -177,6 +186,9 @@ if choice == 'Survei Kepuasan':
     url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
    
     st.title('Survei Kepuasan')
+    st.write("Suara Anda penting bagi kami. Kami selalu berusaha meningkatkan program pengaduan mahasiswa kami untuk memastikan kepuasan Anda di kampus. Bergabunglah dalam survei kepuasan kami dan bantu kami memahami kebutuhan dan harapan Anda. Dengan demikian, kami dapat terus memberikan layanan terbaik untuk memenuhi kebutuhan Anda dan membangun komunitas kampus yang lebih baik.")
+    # Tampilkan deskripsi staff
+    st.markdown('-------------')   
     st.write('Silahkan mengisi survei kepuasan berikut ini:')
     name = st.text_input('Nama:')
     nim = st.text_input('NIM:')
@@ -756,7 +768,7 @@ if choice == 'Complaint Analytics':
         # Tampilkan metrik dalam kolom
         col1, col2 = st.columns(2)
         with col1:
-            st.metric("Average resolution time (Hours)", f"{avg_resolution_time:.2f}")
+            st.metric("Average Durasi Penyelesaian Keluhan (Jam)", f"{avg_resolution_time:.2f}")
         with col2:
             st.metric(label="Rata-rata Kepuasan", value=round(last_month, 2), delta=round(delta, 2))
 
