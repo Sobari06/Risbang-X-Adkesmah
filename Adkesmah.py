@@ -78,12 +78,13 @@ if choice == 'Halaman Utama':
     with col1:
                 st.title("Chat Gantari")
                 st.subheader("Ormawa Eksekutif PKU IPB Kabinet Gantari Arti")
-                st.write("Membuat perubahan yang lebih baik dimulai dari menyuarakan masalah. Dengan Chat Gantari, Anda memiliki kesempatan untuk mengutarakan segala masalah dan keluhan yang Anda alami di Semasa PKU. Kami menjamin privasi dan keamanan informasi yang Anda berikan, serta memberikan solusi yang tepat dan efektif untuk setiap masalah yang dihadapi.")
-               
+                           
                 
     with col2:
             # Tampilkan informasi nilai mutu
                 st.image('RISBANG X ADKESMAH.png', width=300)
+    st.write("Membuat perubahan yang lebih baik dimulai dari menyuarakan masalah. Dengan Chat Gantari, Anda memiliki kesempatan untuk mengutarakan segala masalah dan keluhan yang Anda alami di Semasa PKU. Kami menjamin privasi dan keamanan informasi yang Anda berikan, serta memberikan solusi yang tepat dan efektif untuk setiap masalah yang dihadapi.")
+   
 
     st.markdown('-------------')   
     st.subheader('Input Keluhan Mahasiswa')
