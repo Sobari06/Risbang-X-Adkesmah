@@ -134,8 +134,8 @@ if choice == 'Identitas Penerima Keluhan':
 
     st.title('Advocare Introduction')
 
-    st.write("Advocare adalah penerima keluhan yang siap mendengar dan menyelesaikan setiap masalah yang Anda hadapi. Dengan fokus pada kepuasan dan kesejahteraan Anda, Advocare menawarkan layanan yang responsif dan profesional untuk membantu menyelesaikan masalah Anda dengan cepat dan efektif. Advocare terlatih dalam menangani setiap jenis keluhan, dan kami berkomitmen untuk memberikan solusi yang tepat dan memuaskan setiap kali Anda menghubungi Advocare. Dengan Advocare, Anda dapat merasa tenang dan terjamin bahwa masalah Anda akan ditangani dengan penuh perhatian dan keahlian yang sesuai.")
-    # Tampilkan deskripsi staff
+    st.write("Advocare menyelesaikan setiap masalah dengan cepat dan tepat. Kami fokus pada kepuasan dan kesejahteraan Anda, dan menawarkan layanan profesional dan responsif. Kami terlatih menangani segala jenis keluhan dan berkomitmen memberikan solusi memuaskan. Dengan Advocare, Anda tenang dan terjamin masalah Anda ditangani dengan keahlian yang sesuai.")
+             # Tampilkan deskripsi staff
     st.markdown('-------------')   
 
    
