@@ -22,7 +22,7 @@ import psycopg2
 # Mengatur konfigurasi tampilan Streamlit
 def set_page_config():
         st.set_page_config(
-            page_title="Chat Gantari",
+            page_title="Gantari Help",
             page_icon='LOGO EKSE1.png',
             layout="wide",
             initial_sidebar_state="expanded",
@@ -76,7 +76,7 @@ if choice == 'Halaman Utama':
     st_lottie(animation, speed=1, width=700, height=700, key="anima")
     col1, col2= st.columns([1,1])
     with col1:
-                st.title("Chat Gantari")
+                st.title("Gantari Help")
                 st.subheader("Ormawa Eksekutif PKU IPB Kabinet Gantari Arti")
                            
                 
