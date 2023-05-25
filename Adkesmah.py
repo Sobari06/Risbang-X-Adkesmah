@@ -171,22 +171,23 @@ if choice == 'Identitas Penerima Keluhan':
 # Survei Kepuasan
 if choice == 'Survei Kepuasan':
         #Mendefinisikan fungsi untuk menampilkan animasi Lottie
-    # def load_lottie_url(url: str):
-    #     r = requests.get(url)
-    #     if r.status_code != 200:
-    #         return None
-    #     return r.json()
-    #  # Menampilkan animasi Lottie di tampilan utama Streamlit
-    # st_lottie(load_lottie_url(url))
-    with open("SurveiPuas.json", "r") as f:
-                animation = json.load(f)
-    st_lottie(animation, speed=1, width=700, height=700, key="animasi")
+    def load_lottie_url(url: str):
+        r = requests.get(url)
+        if r.status_code != 200:
+            return None
+        return r.json()
+     # Menampilkan animasi Lottie di tampilan utama Streamlit
+        # Mendefinisikan URL animasi Lottie yang akan ditampilkan
+    url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
+    st_lottie(load_lottie_url(url))
+#     with open("SurveiPuas.json", "r") as f:
+#                 animation = json.load(f)
+#     st_lottie(animation, speed=1, width=700, height=700, key="animasi")
     def add_survei(name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback):
         data = [name, nim, date, satisfaction, response_time, resolution, friendliness, handling, effectiveness, communication, appreciation, recommendation, feedback]
         sheet1.insert_row(data, index=2)
     
-    # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
+
    
     st.title('Survei Kepuasan')
     st.write("Suara Anda penting bagi kami. Kami selalu berusaha meningkatkan program pengaduan mahasiswa kami untuk memastikan kepuasan Anda di kampus. Bergabunglah dalam survei kepuasan kami dan bantu kami memahami kebutuhan dan harapan Anda. Dengan demikian, kami dapat terus memberikan layanan terbaik untuk memenuhi kebutuhan Anda dan membangun komunitas kampus yang lebih baik.")
