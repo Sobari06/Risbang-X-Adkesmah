@@ -178,7 +178,7 @@ if choice == 'Survei Kepuasan':
         return r.json()
      # Menampilkan animasi Lottie di tampilan utama Streamlit
         # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    url = "https://assets7.lottiefiles.com/private_files/lf30_VeGYYQ.json"
+    url = "https://assets7.lottiefiles.com/private_files/lf30_af2t9xiq.json"
     st_lottie(load_lottie_url(url))
 #     with open("SurveiPuas.json", "r") as f:
 #                 animation = json.load(f)
