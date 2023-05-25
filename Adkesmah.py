@@ -69,7 +69,7 @@ if choice == 'Halaman Utama':
         return r.json()
 
     # Mendefinisikan URL animasi Lottie yang akan ditampilkan
-    url = "https://assets8.lottiefiles.com/packages/lf20_km5er2un.json"
+    url = "https://assets2.lottiefiles.com/packages/lf20_ncztkceu.json"
 
     with open("Halutama2.json", "r") as f:
         animation = json.load(f)
